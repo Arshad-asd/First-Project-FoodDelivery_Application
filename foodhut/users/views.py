@@ -93,7 +93,7 @@ def send_otp(request):
             [email],
             fail_silently=False,
         )
-        messages.success(request,'One time password send to yor email')
+        messages.success(request,'One time password send to yor email.')
         return redirect('enter_otp')
     else:
         error_message ="Invaild email please enter correct email"
