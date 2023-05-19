@@ -1,0 +1,155 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Products{% endblock %}
+{% block additional_styles %}  
+
+  <style>
+    .custom-font {
+        font-family: "Blinker", sans-serif;
+    }
+    .navbar {
+        height: 70px; 
+    }
+    .navbar-nav .nav-link:hover {
+        color: yellow;
+    }
+    body {
+        background-color:#E2AC13;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding-top: 80px; /* Add top padding to body */
+    }
+    .container {
+        max-width: 500px;
+        width: 100%;
+        padding: 20px;
+        background-color:  rgb(255 238 7 / 70%);
+    }
+    .image-upload-container {
+        position: relative;
+        width: 200px;
+        height: 200px;
+        border: 2px dashed #ccc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+    .image-upload-container:hover {
+        border-color: #34A853;
+    }
+    .image-upload-container input[type="file"] {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+    .image-upload-icon {
+        font-size: 80px;
+        color: #888;
+    }
+    .image-upload-label {
+        margin-top: 10px;
+        text-align: center;
+        color: #888;
+    }
+    .product-count-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 10px;
+    }
+    .product-count-input {
+        width: 50px;
+        text-align: center;
+    }
+    .product-count-buttons {
+        display: flex;
+        align-items: center;
+    }
+    .product-count-button {
+        border: 1px solid #ccc;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .product-count-button:hover {
+        background-color: #ccc;
+    }
+    .product-count-button.minus {
+        color: red;
+        background-color:white;
+    }
+    .product-count-button.plus {
+        color: green;
+    }
+    .product-count-buttons button {
+        margin-right: 5px;
+    }
+    .add-product-button {
+        color: black;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        display: block;
+        margin: 20px auto;
+    }
+</style>{% endblock %}
+{% block content%}
+<div class="container mt-5">
+    <h2 class="text-center">Add Product</h2>
+    <form>
+        <div class="form-group">
+            <label for="productName">Product Name:</label>
+            <input type="text" class="form-control" id="productName" name="productName">
+        </div>
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <textarea class="form-control" id="description" name="description"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="price">Price:</label>
+            <input type="number" class="form-control" id="price" name="price">
+        </div>
+        <div class="form-group">
+            <label for="image">Image:</label>
+            <div class="image-upload-container">
+                <input type="file" id="image" name="image">
+                <span class="image-upload-icon"><i class="fas fa-camera"></i></span>
+            </div>
+            <p class="image-upload-label">Click to select an image</p>
+        </div>
+        <div class="form-group">
+            <label for="category">Category:</label>
+            <select class="form-control" id="category" name="category">
+                <option value="">Select category</option>
+                {% for category in categories %}
+                <option value="{{ category.id }}">{{ category.categoryes }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="size">Size:</label>
+            <select class="form-control" id="size" name="size">
+                <option value="">Select size</option>
+                {% for size in sizes %}
+                <option value="{{ size.id }}">{{ size.product_size }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="product-count-container">
+            <label for="productCount">Product Count:</label>
+            <div class="product-count-buttons">
+                <button class="btn btn-outline-danger product-count-button minus" type="button"><i class="fas fa-minus"></i></button>
+                <input type="number" class="form-control product-count-input" id="productCount" name="productCount" value="1">
+                <button class="product-count-button plus btn btn-outline-success" type="button"><i class="fas fa-plus"></i></button>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-warning btn-outline-info add-product-button">Add Product</button>
+    </form>
+</div>
+
+{% endblock content%}

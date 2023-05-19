@@ -1,0 +1,61 @@
+{% load  static %}
+<!DOCTYPE html>
+<html>
+<head>
+<title>Creative Colorlib SignUp Form</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+<!-- Custom Theme files -->
+<link href="{% static 'css/signup.css/'%}" rel="stylesheet" type="text/css" media="all" />
+<!-- //Custom Theme files -->
+<!-- web font -->
+<link href="//fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i" rel="stylesheet">
+<!-- //web font -->
+</head>
+<body>
+	<!-- main -->
+	<div class="main-w3layouts wrapper">
+		<h1> Register Here </h1>
+		<div class="main-agileinfo">
+			<div class="agileits-top">
+				<form action="#" method="post">
+					{% csrf_token %}
+					<input class="text" id="name" type="text" name="name" placeholder="Enter name" required="">
+					<input class="text email" id="email" type="email" name="email" placeholder="Enter Email" required=""pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+					<input class="text" id="Phonenumber" type="text" name="Phonenumber" placeholder="Enter Phonenumber" required=""><br>
+
+					<input class="text" id="pass1" type="password" name="pass1" placeholder="Password" required="">
+					<input class="text w3lpass" id="pass2" type="password" name="pass2" placeholder="Confirm Password" required="">
+					<div class="wthree-text">
+						<label class="anim">
+							<input type="checkbox" class="checkbox" required="">
+							<span>I Agree To The Terms & Conditions</span>
+						</label>
+                        
+						<div class="clear"> </div>
+					</div>
+					
+					<input type="submit" value="SIGNUP">
+				</form>
+				<a href="{%url 'signin'%}" style="color:#fff"> I have an account!</a>
+				
+			</div>
+		</div>
+		
+		<ul class="colorlib-bubbles">
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+		</ul>
+	</div>
+	<!-- //main -->
+</body>
+</html>
