@@ -77,7 +77,7 @@ class Category(models.Model):
 
 
 class Cart(models.Model):
-    products = models.ManyToManyField('ProductSize', through='CartItem')
+    products = models.ManyToManyField('Product', through='CartItem')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -87,6 +87,7 @@ class Cart(models.Model):
 class CartItem(models.Model):
     user= models.ForeignKey(CustomUser,on_delete=models.CASCADE,null=True)
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='cart_items')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE) 
     product_size = models.ForeignKey('ProductSize', on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
     is_active=models.BooleanField(default=True)
