@@ -57,21 +57,39 @@ class Product(models.Model):
     Product_Image = models.ImageField(upload_to='product_images')
     category = models.ForeignKey('Category', on_delete=models.CASCADE)
 
-
     def __str__(self):
-        return self.name
+        return self.Product_name
 
 class ProductSize(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product_id = models.ForeignKey(Product, on_delete=models.CASCADE)
     size = models.CharField(max_length=50)
     price = models.DecimalField(max_digits=8, decimal_places=2,default=0)
     Quantity = models.IntegerField(default=0)
 
-    def __str__(self):
-        return f"{self.size} - {self.product.name}"
-
+    def __str__(self) -> str:
+        return self.size
 class Category(models.Model):
     categoryes = models.CharField(max_length=50)
 
     def __str__(self):
         return self.categoryes
+    
+
+
+class Cart(models.Model):
+    products = models.ManyToManyField('ProductSize', through='CartItem')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def get_total_price(self):
+        return sum(item.get_subtotal() for item in self.cart_items.all())
+
+class CartItem(models.Model):
+    user= models.ForeignKey(CustomUser,on_delete=models.CASCADE,null=True)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='cart_items')
+    product_size = models.ForeignKey('ProductSize', on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    is_active=models.BooleanField(default=True)
+
+    def get_subtotal(self):
+        return self.product_size.price * self.quantity

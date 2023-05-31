@@ -1,4 +1,4 @@
-{% extends 'admin/base.html' %}
+{% extends 'admin/base_page.html' %}
 
 {% block title %}Products{% endblock %}
 {% block additional_styles %}  
@@ -28,6 +28,7 @@
         background-color:  rgb(255 238 7 / 70%);
     }
     .image-upload-container {
+        background-color: bisque;
         position: relative;
         width: 200px;
         height: 200px;
@@ -101,7 +102,8 @@
 {% block content%}
 <div class="container mt-5">
     <h2 class="text-center">Add Product</h2>
-    <form>
+    <form action={% url 'add_product' %} method="post" enctype="multipart/form-data">
+        {% csrf_token %}
         <div class="form-group">
             <label for="productName">Product Name:</label>
             <input type="text" class="form-control" id="productName" name="productName">
@@ -109,10 +111,6 @@
         <div class="form-group">
             <label for="description">Description:</label>
             <textarea class="form-control" id="description" name="description"></textarea>
-        </div>
-        <div class="form-group">
-            <label for="price">Price:</label>
-            <input type="number" class="form-control" id="price" name="price">
         </div>
         <div class="form-group">
             <label for="image">Image:</label>
@@ -126,26 +124,36 @@
             <label for="category">Category:</label>
             <select class="form-control" id="category" name="category">
                 <option value="">Select category</option>
-                {% for category in categories %}
-                <option value="{{ category.id }}">{{ category.categoryes }}</option>
+                {% for categ in categories %}
+                <option value="{{ categ.categoryes}}">{{ categ.categoryes }}</option>
                 {% endfor %}
             </select>
         </div>
         <div class="form-group">
-            <label for="size">Size:</label>
-            <select class="form-control" id="size" name="size">
-                <option value="">Select size</option>
-                {% for size in sizes %}
-                <option value="{{ size.id }}">{{ size.product_size }}</option>
-                {% endfor %}
-            </select>
+            <input type="checkbox" id="checkbox-medium" name="checkbox-medium">
+            <label for="size-medium"> medium</label>
+            <div class="d-flex">
+                <input type="number" class="form-control mx-2" id="price-medium" name="price-medium"  min="0" placeholder="Price for medium size">
+                <input type="number" class="form-control mx-2" id="offer-price-medium" name="offer-price-medium"  min="0" placeholder="Offer price for medium size">
+                <input type="number" class="form-control mx-2" id="productCount"  min="0" name="productCount-medium" value="1">
+            </div>
         </div>
-        <div class="product-count-container">
-            <label for="productCount">Product Count:</label>
-            <div class="product-count-buttons">
-                <button class="btn btn-outline-danger product-count-button minus" type="button"><i class="fas fa-minus"></i></button>
-                <input type="number" class="form-control product-count-input" id="productCount" name="productCount" value="1">
-                <button class="product-count-button plus btn btn-outline-success" type="button"><i class="fas fa-plus"></i></button>
+        <div class="form-group">
+            <input type="checkbox" id="checkbox-large" name="checkbox-large">
+            <label for="size-large"> Large</label>
+            <div class="d-flex">
+                <input type="number" class="form-control mx-2" id="price-large" name="price-large"  min="0" placeholder="Price for large size">
+                <input type="number" class="form-control mx-2" id="offer-price-large" name="offer-price-large"  min="0" placeholder="Offer price for large size">
+                <input type="number" class="form-control mx-2" id="productCount"  min="0" name="productCount-large" value="1">
+            </div>
+        </div>
+        <div class="form-group">
+            <input type="checkbox" id="checkbox-xl" name="checkbox-xl">
+            <label for="size-xl"> Xtra Large</label>
+            <div class="d-flex">
+                <input type="number" class="form-control mx-2" id="price-xl" name="price-xl"  min="0" placeholder="Price for xl size">
+                <input type="number" class="form-control mx-2" id="offer-price-xl" name="offer-price-xl"  min="0" placeholder="Offer price for xl size">
+                <input type="number" class="form-control mx-2" id="productCount-xl"  min="0" name="productCount-xl" value="1">
             </div>
         </div>
         <button type="submit" class="btn btn-warning btn-outline-info add-product-button">Add Product</button>

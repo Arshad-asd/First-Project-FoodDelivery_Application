@@ -1,0 +1,102 @@
+{% extends 'admin/base_page.html' %}
+{% load static %}
+{% block title %}products{% endblock %}
+{% block additional_styles %}  
+.mt-5{
+    margin-top:6rem!important;
+    
+}
+nav{
+    background-color:  rgb(255 238 7 / 70%);
+
+}
+
+{% endblock %}
+{% block content%}
+
+<div class="container mt-5">
+<nav class="navbar navbar-expand-lg navbar-light  ">
+    <div class="container-fluid ">
+      <a class="navbar-brand " href="#"><i class="fa fa-truck" aria-hidden="true"></i></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <form class="d-flex px-4 ms-auto me-4">
+            <input class="form-control me-2 rounded-pill border-success" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success " type="submit">  <i class="fas fa-search"></i></button>
+          </form>
+      </div>
+    </div>
+  </nav>
+
+  <table class="table align-middle mb-0 bg-white mt-2 ">
+    <thead class="bg-light">
+      <tr>
+        <th>order_id</th>
+        <th>Product_id</th>
+        <th>User</th>
+        <th>Product name</th>
+        <th>Category</th>
+        <th>Sizes</th>
+        <th>Amount</th>
+        <th>Quantity</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>#001</td>
+        <td>
+            <div class="d-flex align-items-center ">
+              <img
+                  src="https://mdbootstrap.com/img/new/avatars/8.jpg"
+                  alt=""
+                  style="width: 45px; height: 45px"
+                  class="rounded-circle border border-success "
+                  />
+              <div class="ms-3">
+                <p class="fw-bold mb-1">Arshad</p>
+                <p class="text-muted mb-0">arshad@gamil.com</p>
+              </div>
+            </div>
+          </td>
+
+        <td>
+          <div class="d-flex align-items-center ">
+            <img
+                src="{% static 'img/Rectangle 243.png '%}"
+                alt=""
+                style="width: 45px; height: 45px"
+                class="rounded-circle border border-success "
+                />
+            <div class="ms-3">
+              <p class="fw-bold mb-1">Beef Burger</p>
+              <p class="text-muted mb-0"><i class="fa fa-star warning" style="color:gold" aria-hidden="true"></i><i class="fa fa-star" style="color:gold" aria-hidden="true"></i><i class="fa fa-star" style="color:gold" aria-hidden="true"></i><i class="fa fa-star" style="color:gold" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i></p>
+            </div>
+          </div>
+        </td>
+        <td>
+          <p class="fw-normal mb-1">Burger</p>
+          <p class="text-muted mb-0"></p>
+        <td>
+            <p class="fw-bold mb-1">M</p>
+        </td>
+        <td>
+            <p class="fw-bold mb-1">₹ 100</p>
+        </td>
+        <td>
+            <p class="fw-bold mb-1">1</p>
+        </td>
+        <td><span class="badge badge-success rounded-pill d-inline">Shpping</span></td>
+        <td>
+            <form action="" method="post" class="d-inline">{% csrf_token %}
+              <input type="submit" class="btn btn-danger" value="Cancil">
+            </form>
+          </td>
+    </tbody>
+  </table>
+</div>
+{% endblock content%}

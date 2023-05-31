@@ -1,0 +1,85 @@
+{% extends 'admin/base_page.html' %}
+{% load static %}
+{% block title %}products{% endblock %}
+{% block additional_styles %}  
+.mt-5{
+    margin-top:6rem!important;
+    
+}
+nav{
+    background-color:  rgb(255 238 7 / 70%);
+
+}
+
+
+{% endblock %}
+{% block content%}
+
+<div class="container mt-5">
+<nav class="navbar navbar-expand-lg navbar-light  ">
+    <div class="container-fluid ">
+      <a class="navbar-brand " href="#"><i class="fa fa-cart-plus " aria-hidden="true"></i></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item px-4">
+            <a class="nav-link " aria-current="page" href="{% url 'products'%}"><b>PRODUCT LIST</b></a>
+          </li>
+          <li class="nav-item px-4">
+            <a class="nav-link" href="{% url 'add_product'%}"><b>ADD PRODUCT</b></a>
+          </li>
+          <li class="nav-item px-4">
+            <a class="nav-link active " href="{% url 'category_list'%}" ><b>CATEGORY</b> </a>
+          </li>
+        </ul>
+        <form class="d-flex px-4 ">
+          
+          <input class="form-control me-2 rounded-pill border-success" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success " type="submit">  <i class="fas fa-search"></i></button>
+        </form>
+      </div>
+    </div>
+  </nav>
+
+  
+
+<div class="row mt-2">
+    <div class="col-sm-4">
+        <h4 class="text-center alert alert-info"> ADD CATEGORY</h4>
+        <form action="{% url 'category'%}" class="d-flex px-4 " method ="post">
+            {% csrf_token %}
+            <input class="form-control  border-success" type="text" name="categoryname" required="" placeholder="Enter category">
+          <button class="btn btn-outline-success " type="submit"> Add</button>
+        </form>
+    </div>
+    <div class="col-sm-8">
+        <h4 class="text-center alert alert-info"> CATEGORY LIST</h4>
+
+        <table class="table table-hover bg-light  ">
+            <thead>
+              <tr>
+                <th scope="col">CATEGORY_id</th>
+                <th scope="col">CATEGORYNAME</th>
+                <th scope="col">ACTION</th>
+              </tr>
+            </thead>
+            <tbody>
+              {%for s in stu%}
+              <tr>
+                <td>{{ s.id }}</td>
+                <td>{{ s.categoryes}}</td>
+                <td>
+                    <form action="{% url 'delete_category' s.id %}" method="post" class="d-inline">{% csrf_token %}
+                        <input type="submit" class="btn btn-danger" value="Delete">
+
+                    </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+  {% endblock content%}
