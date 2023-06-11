@@ -1,0 +1,205 @@
+{% extends 'user/ubase_page.html' %}
+{% load static %}
+{% block additional_styles %}{% endblock %}
+{% block head %}
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="{% static 'css/profile.css' %}" rel="stylesheet" />
+{% endblock %}
+{% block content %}
+    <div class="container mt-5 ">
+        <div class="row gutters">
+            <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="account-settings">
+                            <div class="user-profile">
+                                <form action="{% url 'update_photo' %}"
+                                        method="post"
+                                        enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                <div class="user-avatar">
+                                    <img id="avatar-img"
+                                         src="{{profile_pic.profile_pic.url}}"
+                                         alt="Maxwell Admin">
+                                    <input type="file"
+                                           id="avatar-input"
+                                           accept="image/*"
+                                           style="display: none"
+                                           onchange="loadAvatar(event)"
+                                           name="profile_pic">
+                                    <label for="avatar-input" class="add-photo-icon">
+                                        <i class="fas fa-camera"></i>
+                                    </label>
+                                    <div class="mt-2">
+                                    <input type="submit" class="btn btn-primary" value="addphoto">
+                                </div>
+                                </form>
+                                </div>
+                                <h5 class="user-name">{{ user.name }}</h5>
+                                <h6 class="user-email">{{ user.email }}</h6>
+                            </div>
+                            <div class="about">
+                                <h5>About</h5>
+                                <p>I'm Yuki. Full Stack Designer I enjoy creating user-centric, delightful and human experiences.</p>
+                            </div>
+                            <div class="row p-4">
+                                <input type="button" class="btn btn-primary" value="Orderdetails">
+                                <input type="button" class="btn btn-primary mt-2 " value="Show Address">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% comment %} address add fields {% endcomment %}
+            <div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12">
+                <form action="{% url 'profileUpdate' %}"
+                      method="post"
+                      enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="row gutters">
+                                <h6 class="mb-2 text-primary">Profile address</h6>
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 d-flex">
+                                    {% for profile_address in profile_address %}
+                                        <div class="card mr-2" style="width: 18rem;">
+                                            <div class="card-body bg-warning"
+                                                 style="width: 18rem;
+                                                        border-radius: 10px">
+                                                <h5 class="card-title">Address1</h5>
+                                                <p>
+                                                    {{ profile_address.name }},
+                                                    <br>
+                                                    {{ profile_address.street }},{{ profile_address.city }},
+                                                    <br>
+                                                    {{ profile_address.state }},{{ profile_address.country }},
+                                                    <br>
+                                                    Pin:{{ profile_address.postal_code }},
+                                                    <br>
+                                                    Ph:{{ profile_address.phone_number }}
+                                                </p>
+                                                <a href="#" class="btn btn-primary">Edit</a>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                    <h6 class="mb-2 text-primary">Personal Details</h6>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <label for="fullName">Full Name</label>
+                                        <input type="text"
+                                               class="form-control"
+                                               id="fullName"
+                                               placeholder="Enter full name"
+                                               name="name"
+                                               value="{{ user.name }}">
+                                    </div>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <label for="eMail">Email</label>
+                                        <input type="email"
+                                               class="form-control"
+                                               id="eMail"
+                                               placeholder="Enter email ID"
+                                               value="{{ user.email }}">
+                                    </div>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <label for="phone">Phone</label>
+                                        <input type="text"
+                                               class="form-control"
+                                               id="phone"
+                                               placeholder="Enter phone number"
+                                               name="mobile"
+                                               value="{{ user.mobile }}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row gutters">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                    <h6 class="mt-3 mb-2 text-primary">Address</h6>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <label for="Street">Street</label>
+                                        <input type="text"
+                                               class="form-control"
+                                               id="Street"
+                                               placeholder="Enter Street"
+                                               name="street">
+                                    </div>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <label for="ciTy">City</label>
+                                        <input type="text"
+                                               class="form-control"
+                                               id="ciTy"
+                                               placeholder="Enter City"
+                                               name="city">
+                                    </div>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <label for="sTate">State</label>
+                                        <input type="text"
+                                               class="form-control"
+                                               id="sTate"
+                                               placeholder="Enter State"
+                                               name="state">
+                                    </div>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <label for="zIp">Country</label>
+                                        <input type="text"
+                                               class="form-control"
+                                               id="country"
+                                               placeholder="Enter Country"
+                                               name="country">
+                                    </div>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <label for="zIp">Zip Code</label>
+                                        <input type="text"
+                                               class="form-control"
+                                               id="zIp"
+                                               placeholder="Zip Code"
+                                               name="zip">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row gutters">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                    <div class="text-right">
+                                        <input type="submit"
+                                               id="submit"
+                                               name="submit"
+                                               class="btn btn-primary"
+                                               value="Add">
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        function loadAvatar(event) {
+          var reader = new FileReader();
+          reader.onload = function() {
+            var avatarImg = document.getElementById('avatar-img');
+            avatarImg.src = reader.result;
+          };
+          reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
+{% endblock %}

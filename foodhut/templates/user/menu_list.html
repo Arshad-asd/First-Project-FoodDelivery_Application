@@ -95,7 +95,7 @@
                                     <!-- Product name-->
                                     <h5 class="fw-bolder"><a class="text-decoration-none text-dark" href="{% url 'item' pr.id %}">{{ pr.Product_name}}</a></h5>
                                     <!-- Product reviews-->
-                                    <p> {{ pr.description}}</p>
+                                    {% comment %} <p> {{ pr.description}}</p> {% endcomment %}
                                     <div class="d-flex justify-content-center small text-warning mb-2">
                                         <div class="bi-star-fill"></div>
                                         <div class="bi-star-fill"></div>

@@ -1,0 +1,227 @@
+{% extends 'user/ubase_page.html' %}
+{% load static %}
+{% block additional_styles %}{% endblock %}
+{% block head %}
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+{% endblock %}
+{% block content %}
+    <div class="container-md mt-3">
+        <div class="row">
+            <div class="col-md-8 mb-4">
+                <div class="card mb-4">
+                    <div class="card-header py-3">
+                        <h5 class="mb-0">Biling details</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- 2 column grid layout with text inputs for the first and last names -->
+                        <select name="selectAddress" id="selectAddress" onchange="function1()">
+                            <option value="">Select address</option>
+                            {% for address in addresses %}
+                                <option value="{{ address.id }}"
+                                        data-name="{{ address.name }}"
+                                        data-email="{{ address.user.email }}"
+                                        data-number="{{ address.phone_number }}"
+                                        data-street="{{ address.street }}"
+                                        data-city="{{ address.city }}"
+                                        data-state="{{ address.state }}"
+                                        data-country="{{ address.country }}"
+                                        data-zip="{{ address.postal_code }}">{{ address.street }}</option>
+                            {% endfor %}
+                            <option value="none">None</option>
+                        </select>
+                        <div class="row mb-4">
+                            <div class="col">
+                                <div class="form-outline">
+                                    <input type="text" id="Name" class="form-control" />
+                                    <label class="form-label" for="form7Example1">Name</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-outline">
+                                    <input type="text" id="Email" class="form-control" />
+                                    <label class="form-label" for="form7Example2">Email</label>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 2 column grid layout with text inputs for the phone_number and last n -->
+                        <div class="row mb-4">
+                            <div class="col">
+                                <div class="form-outline">
+                                    <input type="text" id="number" class="form-control" />
+                                    <label class="form-label" for="form7Example1">Phone</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-outline">
+                                    <input type="text" id="street" class="form-control" />
+                                    <label class="form-label" for="form7Example2">Street</label>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 2 column grid layout with text inputs for the City and State -->
+                        <div class="row mb-4">
+                            <div class="col">
+                                <div class="form-outline">
+                                    <input type="text" id="city" class="form-control" />
+                                    <label class="form-label" for="form7Example1">City</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-outline">
+                                    <input type="text" id="state" class="form-control" />
+                                    <label class="form-label" for="form7Example2">State</label>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 2 column grid layout with text inputs for the Country and Zipcode -->
+                        <div class="row mb-4">
+                            <div class="col">
+                                <div class="form-outline">
+                                    <input type="text" id="country" class="form-control" />
+                                    <label class="form-label" for="form7Example1">Country</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-outline">
+                                    <input type="text" id="zip" class="form-control" />
+                                    <label class="form-label" for="form7Example2">Zip</label>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Checkbox -->
+                        <div class="d-flex justify-content-center">
+                            <div class="form-check d-flex justify-content-between mb-2">
+                                <input class="form-check-input me-2"
+                                       type="checkbox"
+                                       value=""
+                                       id="form7Example8"
+                                       checked />
+                                <label class="form-check-label" for="form7Example8">Create an account?</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card mb-4">
+                    <div class="card-header py-3">
+                        <h5 class="mb-0">Summary</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
+                                <table class="table">
+                                    <thead>
+                                      <tr>
+                                        <th scope="col">Product_name</th>
+                                        <th scope="col">Sub_total</th>
+                                        <th scope="col">total_qty</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in cart.cart_items.all %}
+                                      <tr>
+                                        <td>{{ item.product.Product_name }}</td>
+                                        <td>₹{{ item.get_subtotal }}</td>
+                                        <td>{{ item.quantity  }}</td>
+                                      </tr>
+                                      {% endfor %}
+                                    </tbody>
+                                </table>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
+                                Products_MRP
+                                <span><strong>₹{{ cart.get_total_price }}</strong></span>
+                            </li> 
+                            <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
+                                Products_Qty
+                                <span><strong>{{ cart.get_total_quantity }}</strong></span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                Shipping
+                                <span>Gratis</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
+                                <div>
+                                    <strong>Total amount</strong>
+                                    {% comment %} <strong>
+                                        <p class="mb-0">(including VAT)</p>
+                                    </strong> {% endcomment %}
+                                </div>
+                                <span><strong>$53.98</strong></span>
+                            </li>
+                        </ul>
+                        <div class="form-check">
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   value="COD"
+                                   id="paymentCOD"
+                                   name="payment_method"
+                                   onchange="handlePaymentMethodChange(this)">
+                            <label class="form-check-label" for="paymentCOD">Cash on Delivery (COD)</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   value="PayPal"
+                                   id="paymentPayPal"
+                                   name="payment_method"
+                                   onchange="handlePaymentMethodChange(this)">
+                            <label class="form-check-label" for="paymentPayPal">PayPal</label>
+                        </div>
+                        <button type="button" class="btn btn-primary btn-lg btn-block">Make purchase</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+        function function1() {
+            var selectAddress = document.getElementById("selectAddress");
+            var selectedOption = selectAddress.options[selectAddress.selectedIndex];
+            var selectedValue = selectedOption.value;
+            
+            if (selectedValue === "none") {
+                // Clear the address fields
+                document.getElementById('Name').value = "";
+                document.getElementById('Email').value = "";
+                document.getElementById('number').value = "";
+                document.getElementById('street').value = "";
+                document.getElementById('city').value = "";
+                document.getElementById('state').value = "";
+                document.getElementById('country').value = "";
+                document.getElementById('zip').value = "";
+            } else {
+                // Fetch the selected address details dynamically
+                var name = selectedOption.getAttribute("data-name");
+                var email = selectedOption.getAttribute("data-email");
+                var number = selectedOption.getAttribute("data-number");
+                var street = selectedOption.getAttribute("data-street");
+                var city = selectedOption.getAttribute("data-city");
+                var state = selectedOption.getAttribute("data-state");
+                var country = selectedOption.getAttribute("data-country");
+                var zip = selectedOption.getAttribute("data-zip");
+
+                document.getElementById('Name').value = name;
+                document.getElementById('Email').value = email;
+                document.getElementById('number').value = number;
+                document.getElementById('street').value = street;
+                document.getElementById('city').value = city;
+                document.getElementById('state').value = state;
+                document.getElementById('country').value = country;
+                document.getElementById('zip').value = zip;
+            }
+        }
+        function handlePaymentMethodChange(checkbox) {
+            var checkboxes = document.querySelectorAll('input[name="payment_method"]');
+            
+            checkboxes.forEach(function (checkbox) {
+                if (checkbox !== event.target) {
+                    checkbox.checked = false;
+                }
+            });
+        }
+</script>
+{% endblock %}

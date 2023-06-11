@@ -15,9 +15,12 @@ from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
 from django.core.exceptions import ObjectDoesNotExist
+from django.views.decorators.http import require_POST
+from twilio.rest import Client
 
 
-from users.models import CustomUser,Category,Product,ProductSize
+from users.models import CustomUser,Category,Product,ProductSize,Cart, CartItem,ProfileAddress,ProfilePic
+
 from.forms import Aforms
 from django.db.models import Q
 
@@ -68,78 +71,250 @@ def signin(request):
 
 def signout(request):
     logout(request)
+    request.session.flush()
     messages.success(request, "Logged Out Successfully!!")
     return redirect('signin')
 
-@never_cache
-@login_required(login_url='signin')
 def home(request):
     return render(request,"user/home.html")
 
+def profile(request):
+    user = request.user
+    profile_address = ProfileAddress.objects.filter(user=user)
+    profile_pic = ProfilePic.objects.get(user=user)
+    if profile_address.exists():
+        profile_address = profile_address.all()
+    else:
+        profile_address = None
+    context = {
+        'user': user,
+        'profile_address': profile_address,
+        'profile_pic':profile_pic,
+
+    }
+    return render(request, 'user/profile.html', context)
+
+def profileUpdate(request):
+    user = request.user
+    if request.method == 'POST':
+        print ('sdhgsvadhg')
+        name = request.POST.get('name')
+        mobile = request.POST.get('mobile')
+        street = request.POST.get('street')
+        city = request.POST.get('city')
+        state = request.POST.get('state')
+        country = request.POST.get('country')
+        zip = request.POST.get('zip')
+
+
+        profile_address = ProfileAddress(user=user)
+        profile_address.name=name
+        profile_address.phone_number=mobile
+        profile_address.street = street
+        profile_address.city = city
+        profile_address.state = state
+        profile_address.country = country
+        profile_address.postal_code = zip
+        profile_address.save()
+        return redirect('profile')
+    
+def update_photo(request):
+    user = request.user
+    try:
+        profile_pic = ProfilePic.objects.get(user=user)
+    except ProfilePic.DoesNotExist:
+        # Handle the case when the user doesn't have a profile picture yet
+        profile_pic=ProfilePic(user=user)
+    
+    if request.method == 'POST':
+        new_profile_pic = request.FILES.get('profile_pic')
+        if new_profile_pic:
+            profile_pic.profile_pic = new_profile_pic
+            print('photo undoo',new_profile_pic)
+            profile_pic.save()
+    return redirect('profile')
+
+
 
 def menu_list(request):
-    category = Category.objects.all()
+    all_categories = Category.objects.all()
   
-    return render(request,"user/menu_list.html",{"category":category})
+    return render(request,"user/menu_list.html",{"category":all_categories})
 
 def category_products(request,id):
+    all_categories = Category.objects.all()
     category = Category.objects.get(pk=id)
     products = Product.objects.filter(category=category)
     product_sizes = ProductSize.objects.all()
-    return render(request,"user/menu_list.html", {'categorye': category, 'products': products})
+    return render(request,"user/menu_list.html", {'categorye': category, "category":all_categories, 'products': products})
 
 
 def item(request,id):
-    product = Product.objects.get(pk=id)  
-    return render(request,"user/item.html",{'product': product})
+    product = Product.objects.get(pk=id) 
+    all_categories = Category.objects.all()
+    return render(request,"user/item.html",{'product': product, "category":all_categories})
 
+
+def add_to_cart_nil(request):
+    print('sldkfjldskjfldfkjldsfj')
+    return redirect('cart')
+
+def add_to_cart(request, id):
+    product = get_object_or_404(Product, pk=id)
+    if request.method == 'POST':
+        user = request.user if request.user.is_authenticated else None
+        cart, _ = Cart.objects.get_or_create(user=user)
+        product_size_id = request.POST.get('product_size_id')  # Get the selected product size ID from the request
+
+        # Check if the cart already contains the selected product and product size
+        cart_item, created = cart.cart_items.get_or_create(product=product, product_size_id=product_size_id)
+
+        if not created:
+            cart_item.quantity += 1
+
+        cart_item.save()
+
+    return redirect('cart')
+
+@require_POST
+def update_cart_item(request, id):
+    cart_item = get_object_or_404(CartItem, id=id)
+    new_quantity = int(request.POST.get('quantity', 0))
+    if new_quantity >= 0:
+        cart_item.quantity = new_quantity
+        cart_item.save()
+    return redirect('cart')
+
+def delete_cart_item(request,id):
+    cart_item = get_object_or_404(CartItem, pk=id)
+    cart_item.delete()
+    return redirect('cart')
 
 def cart(request):
-    return render(request,'user/cart.html')
+    user = request.user if request.user.is_authenticated else None
+    cart = Cart.objects.get(user=user) if user else None
+
+    cart_items =CartItem.objects.filter(cart__user=user)
+
+    context ={
+        'cart':cart,
+        'cart_items':cart_items
+    }
+    return render(request,'user/cart.html',context)
+
+def checkout(request):
+    # Get the current user
+    user = request.user
+    # Retrieve the user's cart
+    cart = Cart.objects.get(user=user)
+    # Retrieve the user's address
+    address = ProfileAddress.objects.filter(user=user)
+
+    context = {
+        'addresses': address,
+        'cart': cart,
+    }
+
+    return render(request, 'user/checkout.html', context)
+
+
+
 
 def forgot(request):
     return render(request,"user/forgot.html")
 
+#Email otp
+# def send_otp(request):
+#     error_message =None
+#     otp = random.randint(11111,99999)
+#     email = request.POST.get('email')
+#     user_email = CustomUser.objects.filter(email=email)
+#     if user_email:
+#         user = CustomUser.objects.get(email = email)
+#         user.otp =otp
+#         user.save()
+#         request.session['email'] = request.POST['email']
+#         send_mail(
+#             "welcome to foodhut",
+#             "Your one time otp is"+str(otp),
+#             "arshaarshad21@gmail.com",
+#             [email],
+#             fail_silently=False,
+#         )
+#         messages.success(request,'One time password send to yor email')
+#         return redirect('enter_otp')
+#     else:
+#         error_message ="Invaild email please enter correct email"
+#         return render(request,'user/forgot.html',{'error':error_message})
+
+#-----------------------------------------Mobile_otp-Enter_otp-section------------------------------------------------------
+# def enter_otp(request):
+#     error_message =None
+#     if request.session.has_key('email'):
+#         email = request.session['email']
+#         user = CustomUser.objects.filter(email=email)
+#         for u in user:
+#             user_otp = u.otp
+#         if request.method=="POST":
+#             otp =request.POST.get('otp')
+#             if not otp:
+#                 error_message= "otp is required"
+#             elif not user_otp == otp:
+#                 error_message ="otp is invalid"
+#             if not error_message:
+#                return redirect('home')
+#         return render(request,'user/enter_otp.html')
+#     else:
+#         return render(request,"forgot.html")
+
 def send_otp(request):
-    error_message =None
-    otp = random.randint(11111,99999)
-    email = request.POST.get('email')
-    user_email = CustomUser.objects.filter(email=email)
-    if user_email:
-        user = CustomUser.objects.get(email = email)
-        user.otp =otp
-        user.save()
-        request.session['email'] = request.POST['email']
-        send_mail(
-            "welcome to foodhut",
-            "Your one time otp is"+str(otp),
-            "arshaarshad21@gmail.com",
-            [email],
-            fail_silently=False,
-        )
-        messages.success(request,'One time password send to yor email')
-        return redirect('enter_otp')
+    mobile = request.POST.get('mobilenumber')
+    user_number=CustomUser.objects.filter(mobile=mobile)
+    otp = ''.join([str(random.randint(0, 9)) for _ in range(6)]) 
+    if user_number.exists():
+            user=user_number.first()
+            user.otp=otp
+            user.save()
+            request.session['mobile']=mobile  # Replace with your OTP generation logic
+
+    # Add your Twilio account credentials
+            account_sid = 'AC2079bbb5b6cf31975f6788847cdca4b2'
+            auth_token = '7cdd1b3e5f3014c588d93373a7e9e88a'
+    # twilio_number = '+18306943453'
+
+            client = Client(account_sid, auth_token)
+            message = client.messages.create(
+              body=' welcome to FOODHUT  Your OTP is: ' + otp,
+              from_='+13614707012',
+              to=mobile
+            )
+            return render(request,'user\enter_otp.html')
     else:
-        error_message ="Invaild email please enter correct email"
-        return render(request,'user/forgot.html',{'error':error_message})
+        messages.warning(request,"No user registered with the provided mobile number")
+        return render(request, 'user/forgot.html')
+
+
 def enter_otp(request):
-    error_message =None
-    if request.session.has_key('email'):
-        email = request.session['email']
-        user = CustomUser.objects.filter(email=email)
-        for u in user:
-            user_otp = u.otp
-        if request.method=="POST":
-            otp =request.POST.get('otp')
-            if not otp:
-                error_message= "otp is required"
-            elif not user_otp == otp:
-                error_message ="otp is invalid"
-            if not error_message:
-               return redirect('home')
-        return render(request,'user/enter_otp.html')
-    else:
-        return render(request,"forgot.html")
+    if request.method == 'POST':
+        entered_otp = request.POST.get('otp')
+        mobile = request.session.get('mobilenumber')
+
+        user_number = CustomUser.objects.filter(mobile=mobile)
+        if user_number.exists():
+            user = user_number.first()
+            if entered_otp == user.otp:
+                # OTP verification successful
+                user.is_otp_verified = True
+                user.save()
+                del request.session['mobilenumber']
+                login(request, user)
+                return redirect('home')
+            else:
+               messages.error(request, 'Invalid OTP')
+               return render(request, 'user/enter_otp.html')
+
+    return redirect('send_otp')  # Redirect to the O
+
 
 
 # def reset(request):
@@ -286,8 +461,9 @@ def add_product(request):
             checkbox = request.POST.get(f'checkbox-{size}')
             if checkbox:
                 price = request.POST.get(f'price-{size}')
+                # offer_price = request.POST.get(f'offer-price-{size}')
                 quantity = request.POST.get(f'productCount-{size}')
-                product_size = ProductSize(product_id=product, size=size, price=price,Quantity=quantity)
+                product_size = ProductSize(product_id=product, size=size, price=price,Quantity=quantity,)
                 product_size.save()
     return render(request,"admin/add_product.html",{'categories':categories})
 

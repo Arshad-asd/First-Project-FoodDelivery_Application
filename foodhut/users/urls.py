@@ -2,6 +2,8 @@ from django.urls import path,include
 from .import views
 
 
+
+
 urlpatterns = [
     #user side app paths
     path('',views.welcome,name="welcome"),
@@ -10,10 +12,21 @@ urlpatterns = [
     path('forgot',views.forgot,name="forgot"),
     # path('reset',views.reset,name="reset"),
     path('home',views.home,name="home"),
+    path('profileUpdate',views.profileUpdate,name="profileUpdate"),
+    path('profile',views.profile,name="profile"),
+    path('update_photo',views.update_photo,name="update_photo"),
     path('menu_list',views.menu_list,name="menu_list"),
     path('category_products/<int:id>/',views.category_products,name="category_products"),
     path('item/<int:id>/',views.item,name="item"),
+    path('add_to_cart/<int:id>/', views.add_to_cart, name="add_to_cart"),
+    path('add_to_cart/', views.add_to_cart_nil, name="add_to_cart_nil"),
+    path('update_cart_item/<int:id>/',views.update_cart_item,name="update_cart_item"),
+    path('delete_cart_item/<int:id>',views.delete_cart_item,name="delete_cart_item"),
     path('cart',views.cart,name="cart"),
+
+    path('checkout',views.checkout,name="checkout"),
+
+
 
     path('signout',views.signout,name="signout"),
     path('enter_otp',views.enter_otp,name="enter_otp"),

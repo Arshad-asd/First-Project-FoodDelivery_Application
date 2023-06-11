@@ -1,18 +1,24 @@
-{% extends 'user/base_page.html' %}
+{% extends 'user/ubase_page.html' %}
 
 
-
+{% block additional_styles %}
+.product-image {
+    max-width: 100%;
+    height: auto;
+}
+{% endblock %}
 {% block content %}
 
 
         <!-- Product section-->
 
         <section class="py-5">
-            <div class="container px-4 px-lg-5 my-5">
+            <div class="container px-4 px-lg-5 my-5" style='max-width: 1000px;'>
                 <div class="row gx-4 gx-lg-5 align-items-center rounded-3" style="background-color:#fff80063!important;">
                     <div class="col-md-6">
-                        <div class="image-container">
-                            <img class="card-img-top mb-5 mb-md-0 rounded-3" src="{{ product.Product_Image.url }}" alt="Product Image" />
+                        <div style='display:flex; justify-content: center; align-items: center; aspect-ratio: 1; overflow: hidden; border-radius: 15px; margin: 30px;'>
+                            {% comment %} <img src="{{ product.Product_Image.url }}" alt="Product Image" style='height: 100%;' /> {% endcomment %}
+                            <div style="background-image: url('{{ product.Product_Image.url }}'); height: 100%; width: 100%; background-size: cover; background-repeat: no-repeat;"></div>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -34,18 +40,39 @@
                         </div>
                         <p class="lead">Description: {{ product.description }}</p>
                         <div class="d-flex">
-                            <input class="form-control text-center me-3" id="inputQuantity" type="num" value="1" style="max-width: 3rem" />
-                            <button class="btn btn-outline-dark flex-shrink-0" type="button">
-                                <i class="bi-cart-fill me-1"></i>
-                                Add to cart
-                            </button>
+                            <div hidden>
+                                <form action="{% url 'add_to_cart_nil' %}" method="post">
+                                   {% csrf_token %}
+                                    <input type="text" value='some text'>
+                                   <input type="submit" value="Add to cart">
+                                </form>
+                            </div>
+                            <form action="{% url 'add_to_cart' product.id %}" method="post" class='w-100'>
+                                {% csrf_token %}
+                                <div style='display: grid; grid-auto-flow: row; row-gap: 20px;'> 
+                                    <select name="product_size_id" class="form-select">
+                                        <option selected disabled>Select Size</option>
+                                        {% for size in product.productsize_set.all %}
+                                            <option value="{{ size.id }}">
+                                                {{ size.size }} - ₹{{ size.price }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                    <div style='display: grid; grid-auto-flow: column; column-gap: 20px;'>
+                                        <button type="submit" class="btn btn-dark" style='min-width: 150px; height: 50px;'>Add to Cart</button>
+                                        <button type="#" class="btn btn-dark" style='min-width: 150px; height: 50px;'>By now</button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
+                        
                     </div>
+                    
                 </div>
             </div>
         </section>
         <!-- Related items section-->
-        <section class="py-5 bg-light">
+        {% comment %} <section class="py-5 bg-light">
             <div class="container px-4 px-lg-5 mt-5">
                 <h2 class="fw-bolder mb-4">Related products</h2>
                 <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
@@ -115,8 +142,15 @@
                                 </div>
                             </div>
                             <!-- Product actions-->
+                                                        <!-- Product actions-->
                             <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
+                                <div class="text-center">
+                                    <form method="POST" action="{% url 'add_to_cart' product.id %}">
+                                        <!-- Add any additional form fields here if needed -->
+                                        {% csrf_token %}
+                                        <input type="submit" class="btn btn-outline-dark mt-auto" value="Add to Cart">
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -149,7 +183,7 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section> {% endcomment %}
 
        
 {% endblock content %}
