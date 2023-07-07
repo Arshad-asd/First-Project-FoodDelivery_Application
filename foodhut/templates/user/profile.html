@@ -7,66 +7,65 @@
     <link href="{% static 'css/profile.css' %}" rel="stylesheet" />
 {% endblock %}
 {% block content %}
-    <div class="container mt-5 ">
+    <div class="container mt-5">
         <div class="row gutters">
             <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
+                <!-- User Profile Card -->
                 <div class="card h-100">
                     <div class="card-body">
                         <div class="account-settings">
                             <div class="user-profile">
+                                <!-- Profile Picture Form -->
                                 <form action="{% url 'update_photo' %}"
-                                        method="post"
-                                        enctype="multipart/form-data">
-                                        {% csrf_token %}
-                                <div class="user-avatar">
-                                    <img id="avatar-img"
-                                         src="{{profile_pic.profile_pic.url}}"
-                                         alt="Maxwell Admin">
-                                    <input type="file"
-                                           id="avatar-input"
-                                           accept="image/*"
-                                           style="display: none"
-                                           onchange="loadAvatar(event)"
-                                           name="profile_pic">
-                                    <label for="avatar-input" class="add-photo-icon">
-                                        <i class="fas fa-camera"></i>
-                                    </label>
+                                      method="post"
+                                      enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="user-avatar">
+                                        <img id="avatar-img"
+                                             {% if profile_pic %} src="{{ profile_pic.profile_pic.url }}" {% else %} src="{% static 'img/images.png' %}" {% endif %}
+                                             alt="Profile Picture">
+                                        <input type="file"
+                                               id="avatar-input"
+                                               accept="image/*"
+                                               style="display: none"
+                                               onchange="loadAvatar(event)"
+                                               name="profile_pic">
+                                        <label for="avatar-input" class="add-photo-icon">
+                                            <i class="fas fa-camera"></i>
+                                        </label>
+                                    </div>
                                     <div class="mt-2">
-                                    <input type="submit" class="btn btn-primary" value="addphoto">
-                                </div>
+                                        <input type="submit" class="btn btn-primary" value="Update">
+                                    </div>
                                 </form>
-                                </div>
-                                <h5 class="user-name">{{ user.name }}</h5>
-                                <h6 class="user-email">{{ user.email }}</h6>
                             </div>
-                            <div class="about">
-                                <h5>About</h5>
-                                <p>I'm Yuki. Full Stack Designer I enjoy creating user-centric, delightful and human experiences.</p>
-                            </div>
+                            <!-- View Order Button -->
                             <div class="row p-4">
-                                <input type="button" class="btn btn-primary" value="Orderdetails">
-                                <input type="button" class="btn btn-primary mt-2 " value="Show Address">
+                                <button type="button"
+                                        class="btn btn-primary btn-block btn-lg w-100"
+                                        onclick="window.location.href='{% url 'order_details' %}'">View Order</button>
+                                <button type="button"
+                                        class="btn btn-primary btn-block btn-lg w-100 mt-2"
+                                        data-toggle="modal"
+                                        data-target="#exampleModalCenter">Add Adderess</button>
+                                <button type="button"
+                                        class="btn btn-primary btn-block btn-lg w-100"
+                                        onclick="window.location.href='{% url 'user_coupons' %}'">Coupons</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            {% comment %} address add fields {% endcomment %}
+            <!-- Address Cards Section -->
             <div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12">
-                <form action="{% url 'profileUpdate' %}"
-                      method="post"
-                      enctype="multipart/form-data">
-                    {% csrf_token %}
                     <div class="card h-100">
                         <div class="card-body">
                             <div class="row gutters">
                                 <h6 class="mb-2 text-primary">Profile address</h6>
-                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 d-flex">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 d-flex flex-wrap">
                                     {% for profile_address in profile_address %}
-                                        <div class="card mr-2" style="width: 18rem;">
-                                            <div class="card-body bg-warning"
-                                                 style="width: 18rem;
-                                                        border-radius: 10px">
+                                        <div class="card mr-2 mb-2" style="width: 15rem;">
+                                            <div class="card-body bg-warning" style="border-radius: 10px">
                                                 <h5 class="card-title">Address1</h5>
                                                 <p>
                                                     {{ profile_address.name }},
@@ -79,127 +78,422 @@
                                                     <br>
                                                     Ph:{{ profile_address.phone_number }}
                                                 </p>
-                                                <a href="#" class="btn btn-primary">Edit</a>
+                                                <div class="d-flex justify-content-center">
+                                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter1"
+                                                    data-address-id="{{ profile_address.id }}"
+                                                    data-target="#exampleModalCenter1"
+                                                    data-address-name="{{ profile_address.name }}"
+                                                    data-address-email="{{ profile_address.email }}"
+                                                    data-address-mobile="{{ profile_address.phone_number }}"
+                                                    data-address-house-no="{{ profile_address.house_no }}"
+                                                    data-address-house-name="{{ profile_address.house_name }}"
+                                                    data-address-street="{{ profile_address.street }}"
+                                                    data-address-city="{{ profile_address.city }}"
+                                                    data-address-state="{{ profile_address.state }}"
+                                                    data-address-country="{{ profile_address.country }}"
+                                                    data-address-zip="{{ profile_address.postal_code }}">
+                                                    <i class="fas fa-edit"></i>
+                                            </button>
+                                            <form action="{% url 'delete_address' %}" method="post">
+                                                {% csrf_token %}
+                                                <input type="number" name="address_id" value="{{ profile_address.id  }}"hidden>
+                                                    <button type="submit" class="btn btn-danger ml-2"><i class="fas fa-trash"></i></button>
+                                            </form>
+                                                </div>
                                             </div>
                                         </div>
                                     {% endfor %}
                                 </div>
-                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                                    <h6 class="mb-2 text-primary">Personal Details</h6>
-                                </div>
-                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <label for="fullName">Full Name</label>
-                                        <input type="text"
-                                               class="form-control"
-                                               id="fullName"
-                                               placeholder="Enter full name"
-                                               name="name"
-                                               value="{{ user.name }}">
-                                    </div>
-                                </div>
-                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <label for="eMail">Email</label>
-                                        <input type="email"
-                                               class="form-control"
-                                               id="eMail"
-                                               placeholder="Enter email ID"
-                                               value="{{ user.email }}">
-                                    </div>
-                                </div>
-                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <label for="phone">Phone</label>
-                                        <input type="text"
-                                               class="form-control"
-                                               id="phone"
-                                               placeholder="Enter phone number"
-                                               name="mobile"
-                                               value="{{ user.mobile }}">
-                                    </div>
-                                </div>
+                                <!-- Personal Details Section -->
                             </div>
-                            <div class="row gutters">
-                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                                    <h6 class="mt-3 mb-2 text-primary">Address</h6>
-                                </div>
-                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <label for="Street">Street</label>
-                                        <input type="text"
-                                               class="form-control"
-                                               id="Street"
-                                               placeholder="Enter Street"
-                                               name="street">
-                                    </div>
-                                </div>
-                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <label for="ciTy">City</label>
-                                        <input type="text"
-                                               class="form-control"
-                                               id="ciTy"
-                                               placeholder="Enter City"
-                                               name="city">
-                                    </div>
-                                </div>
-                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <label for="sTate">State</label>
-                                        <input type="text"
-                                               class="form-control"
-                                               id="sTate"
-                                               placeholder="Enter State"
-                                               name="state">
-                                    </div>
-                                </div>
-                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <label for="zIp">Country</label>
-                                        <input type="text"
-                                               class="form-control"
-                                               id="country"
-                                               placeholder="Enter Country"
-                                               name="country">
-                                    </div>
-                                </div>
-                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <label for="zIp">Zip Code</label>
-                                        <input type="text"
-                                               class="form-control"
-                                               id="zIp"
-                                               placeholder="Zip Code"
-                                               name="zip">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row gutters">
-                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                                    <div class="text-right">
-                                        <input type="submit"
-                                               id="submit"
-                                               name="submit"
-                                               class="btn btn-primary"
-                                               value="Add">
-                                    </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
-            </form>
+            </div>
+            <!-- Modal for add address -->
+            <div class="modal fade"
+                 id="exampleModalCenter"
+                 tabindex="-1"
+                 role="dialog"
+                 aria-labelledby="exampleModalCenterTitle"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <!--Modal Body start-->
+                            <form action="{% url 'add_address' %}"
+                                  method="post"
+                                  enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="row gutters">
+                                    <!-- Personal Details Section -->
+                                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                        <h6 class="mb-2 text-primary">Personal Details</h6>
+                                    </div>
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <label for="fullName">Full Name</label>
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="fullName"
+                                                   placeholder="Enter full name"
+                                                   name="name"
+                                                   value="{{ user.name }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <label for="eMail">Email</label>
+                                            <input type="email"
+                                                   class="form-control"
+                                                   id="eMail"
+                                                   placeholder="Enter email ID"
+                                                   value="{{ user.email }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <label for="phone">Phone</label>
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="phone"
+                                                   placeholder="Enter phone number"
+                                                   name="mobile"
+                                                   >
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <label for="house_no">House No</label>
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="house_no"
+                                                   name="house_no"
+                                                   placeholder="Enter House no">
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Address Section -->
+                                <div class="row gutters">
+                                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                        <h6 class="mt-3 mb-2 text-primary">Address</h6>
+                                    </div>
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <label for="House">House name</label>
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="House_name"
+                                                   placeholder="Enter House name"
+                                                   name="house_name">
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <label for="Street">Street</label>
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="Street"
+                                                   placeholder="Enter Street"
+                                                   name="street">
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <label for="ciTy">City</label>
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="ciTy"
+                                                   placeholder="Enter City"
+                                                   name="city">
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <label for="sTate">State</label>
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="sTate"
+                                                   placeholder="Enter State"
+                                                   name="state">
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <label for="counTry">Country</label>
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="counTry"
+                                                   placeholder="Enter Country"
+                                                   name="country">
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <label for="zIp">Postal Code</label>
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="zIp"
+                                                   placeholder="Enter Postal Code"
+                                                   name="zip">
+                                            <div id="zip-error" class="invalid-feedback"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="text" name="address_id" id="" hidden>
+                                <!-- Save Button -->
+                                <div class="row gutters">
+                                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                        <div class="text-right">
+                                            <button type="submit" id="submit" name="submit" class="btn btn-success">Save</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!--Modal Body End-->
             </div>
         </div>
     </div>
-    <script>
+</div>
+
+ <!-- Modal for edit address -->
+ <div class="modal fade"
+ id="exampleModalCenter1"
+ tabindex="-1"
+ role="dialog"
+ aria-labelledby="exampleModalCenterTitle"
+ aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <!--Modal Body start-->
+            <form action="{% url 'edit_address' %}"
+                  method="post"
+                  enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row gutters">
+                    <!-- Personal Details Section -->
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                        <h6 class="mb-2 text-primary">Personal Details</h6>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label for="fullName">Full Name</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="fullName"
+                                   placeholder="Enter full name"
+                                   name="name"
+                                   value="">
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label for="eMail">Email</label>
+                            <input type="email"
+                                   class="form-control"
+                                   id="eMail"
+                                   placeholder="Enter email ID"
+                                   value="">
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label for="mobile">Phone</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="phone"
+                                   placeholder="Enter phone number"
+                                   name="mobile"
+                                   value="">
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label for="house_no">House No</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="houseno"
+                                   name="house_no"
+                                   placeholder="Enter House no"
+                                   value="">
+                        </div>
+                    </div>
+                </div>
+                <!-- Address Section -->
+                <div class="row gutters">
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                        <h6 class="mt-3 mb-2 text-primary">Address</h6>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label for="House">House name</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="housename"
+                                   placeholder="Enter House name"
+                                   name="house_name"
+                                   value="">
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label for="Street">Street</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="street"
+                                   placeholder="Enter Street"
+                                   name="street"
+                                   value="">
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label for="ciTy">City</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="city"
+                                   placeholder="Enter City"
+                                   name="city"
+                                   value="">
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label for="sTate">State</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="state"
+                                   placeholder="Enter State"
+                                   name="state"
+                                   value="">
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label for="counTry">Country</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="country"
+                                   placeholder="Enter Country"
+                                   name="country"
+                                   value="">
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label for="zip">Postal Code</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="zip"
+                                   placeholder="Enter Postal Code"
+                                   name="zip"
+                                   value=""> 
+                        </div>
+                    </div>
+                    <input type="number" id="address_id" name="address_id" hidden>
+
+                </div>
+                <!-- Save Button -->
+                <div class="row gutters">
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                        <div class="text-right">
+                            <button type="submit" id="submit" name="submit" class="btn btn-success">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<!--Modal Body End-->
+</div>
+</div>
+</div>
+</div>
+
+<!-- JavaScript dependencies -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Load Avatar Image -->
+<script>
         function loadAvatar(event) {
-          var reader = new FileReader();
-          reader.onload = function() {
-            var avatarImg = document.getElementById('avatar-img');
-            avatarImg.src = reader.result;
-          };
-          reader.readAsDataURL(event.target.files[0]);
+            var output = document.getElementById('avatar-img');
+            output.src = URL.createObjectURL(event.target.files[0]);
+            output.onload = function () {
+                URL.revokeObjectURL(output.src)
+            }
         }
-    </script>
+        $(document).ready(function() {
+            $('#exampleModalCenter1').on('show.bs.modal', function(event) {
+                var button = $(event.relatedTarget);
+                var addressId = button.data('address-id');
+                var addressName = button.data('address-name');
+                var addressEmail = button.data('address-email');
+                var addressMobile = button.data('address-mobile');
+                var addressHouseNo = button.data('address-house-no');
+                var addressHouseName = button.data('address-house-name');
+                var addressStreet = button.data('address-street');
+                var addressCity = button.data('address-city');
+                var addressState = button.data('address-state');
+                var addressCountry = button.data('address-country');
+                var addressZip = button.data('address-zip');
+        
+                var modal = $(this);
+                modal.find('.modal-title').text('Edit Address');
+                modal.find('#address_id').val(addressId);
+                modal.find('#fullName').val(addressName);
+                modal.find('#eMail').val(addressEmail);
+                modal.find('#phone').val(addressMobile);
+                modal.find('#houseno').val(addressHouseNo);
+                modal.find('#housename').val(addressHouseName);
+                modal.find('#street').val(addressStreet);
+                modal.find('#city').val(addressCity);
+                modal.find('#state').val(addressState);
+                modal.find('#country').val(addressCountry);
+                modal.find('#zip').val(addressZip);
+            });
+        });
+        
+</script>
+<script>
+    // Postal code validation function
+    function validatePostalCode(postalCode) {
+        // Regular expression for 6-digit numerical postal code
+        var regex = /^\d{6}$/;
+
+        // Check if postal code matches the pattern
+        return regex.test(postalCode);
+    }
+
+    // Handle form submission
+    document.querySelector('form').addEventListener('submit', function (event) {
+        var postalCodeInput = document.getElementById('zIp');
+        var postalCode = postalCodeInput.value.trim();
+
+        if (!validatePostalCode(postalCode)) {
+            postalCodeInput.classList.add('is-invalid');
+            document.getElementById('zip-error').textContent = 'Please enter a valid 6-digit numerical postal code.';
+            event.preventDefault(); // Prevent form submission if postal code is invalid
+        } else {
+            postalCodeInput.classList.remove('is-invalid');
+            document.getElementById('zip-error').textContent = '';
+        }
+    });
+</script>
 {% endblock %}

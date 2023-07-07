@@ -1,9 +1,13 @@
 {% extends 'user/ubase_page.html' %}
 {% load static %}
-{% block additional_styles %}{% endblock %}
+{% block additional_styles %}
+
+{% endblock %}
 {% block head %}
-    <link rel="stylesheet"
-          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
+          crossorigin="anonymous">
 {% endblock %}
 {% block content %}
     <div class="container-md mt-3">
@@ -15,13 +19,16 @@
                     </div>
                     <div class="card-body">
                         <!-- 2 column grid layout with text inputs for the first and last names -->
-                        <select name="selectAddress" id="selectAddress" onchange="function1()">
+                        <select name="address_id" id="selectAddress" onchange="function1()">
                             <option value="">Select address</option>
                             {% for address in addresses %}
                                 <option value="{{ address.id }}"
+                                        data-id="{{ address.id }}"
                                         data-name="{{ address.name }}"
                                         data-email="{{ address.user.email }}"
                                         data-number="{{ address.phone_number }}"
+                                        data-houseno="{{address.house_no}}"
+                                        data-housename="{{address.house_name}}"
                                         data-street="{{ address.street }}"
                                         data-city="{{ address.city }}"
                                         data-state="{{ address.state }}"
@@ -33,13 +40,13 @@
                         <div class="row mb-4">
                             <div class="col">
                                 <div class="form-outline">
-                                    <input type="text" id="Name" class="form-control" />
+                                    <input type="text" id="Name" class="form-control" >
                                     <label class="form-label" for="form7Example1">Name</label>
                                 </div>
                             </div>
                             <div class="col">
                                 <div class="form-outline">
-                                    <input type="text" id="Email" class="form-control" />
+                                    <input type="text" id="Email" class="form-control" >
                                     <label class="form-label" for="form7Example2">Email</label>
                                 </div>
                             </div>
@@ -48,13 +55,29 @@
                         <div class="row mb-4">
                             <div class="col">
                                 <div class="form-outline">
-                                    <input type="text" id="number" class="form-control" />
+                                    <input type="text" id="number" class="form-control" >
                                     <label class="form-label" for="form7Example1">Phone</label>
                                 </div>
                             </div>
                             <div class="col">
                                 <div class="form-outline">
-                                    <input type="text" id="street" class="form-control" />
+                                    <input type="text" id="houseno" class="form-control" >
+                                    <label class="form-label" for="form7Example2">House no</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2 column grid layout with text inputs for the huse name and last n -->
+                        <div class="row mb-4">
+                            <div class="col">
+                                <div class="form-outline">
+                                    <input type="text" id="housename" class="form-control" >
+                                    <label class="form-label" for="form7Example1">House name</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-outline">
+                                    <input type="text" id="street" class="form-control" >
                                     <label class="form-label" for="form7Example2">Street</label>
                                 </div>
                             </div>
@@ -63,13 +86,13 @@
                         <div class="row mb-4">
                             <div class="col">
                                 <div class="form-outline">
-                                    <input type="text" id="city" class="form-control" />
+                                    <input type="text" id="city" class="form-control" >
                                     <label class="form-label" for="form7Example1">City</label>
                                 </div>
                             </div>
                             <div class="col">
                                 <div class="form-outline">
-                                    <input type="text" id="state" class="form-control" />
+                                    <input type="text" id="state" class="form-control" >
                                     <label class="form-label" for="form7Example2">State</label>
                                 </div>
                             </div>
@@ -78,14 +101,15 @@
                         <div class="row mb-4">
                             <div class="col">
                                 <div class="form-outline">
-                                    <input type="text" id="country" class="form-control" />
+                                    <input type="text" id="country" class="form-control" >
                                     <label class="form-label" for="form7Example1">Country</label>
                                 </div>
                             </div>
                             <div class="col">
                                 <div class="form-outline">
-                                    <input type="text" id="zip" class="form-control" />
+                                    <input type="text" id="zip" class="form-control" >
                                     <label class="form-label" for="form7Example2">Zip</label>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -111,83 +135,246 @@
                     <div class="card-body">
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
-                                <table class="table">
+                                <table class="table ">
                                     <thead>
-                                      <tr>
-                                        <th scope="col">Product_name</th>
-                                        <th scope="col">Sub_total</th>
-                                        <th scope="col">total_qty</th>
-                                      </tr>
+                                        <tr>
+                                            <th scope="col">Product_name</th>
+                                            <th scope="col">Sub_total</th>
+                                            <th scope="col">total_qty</th>
+                                        </tr>
                                     </thead>
                                     <tbody>
                                         {% for item in cart.cart_items.all %}
-                                      <tr>
-                                        <td>{{ item.product.Product_name }}</td>
-                                        <td>₹{{ item.get_subtotal }}</td>
-                                        <td>{{ item.quantity  }}</td>
-                                      </tr>
-                                      {% endfor %}
+                                            <tr>
+                                                <td>{{ item.product.Product_name }}</td>
+                                                <td>₹{{ item.get_subtotal }}</td>
+                                                <td>{{ item.quantity }}</td>
+                                            </tr>
+                                        {% endfor %}
                                     </tbody>
                                 </table>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
                                 Products_MRP
                                 <span><strong>₹{{ cart.get_total_price }}</strong></span>
-                            </li> 
+                            </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
                                 Products_Qty
                                 <span><strong>{{ cart.get_total_quantity }}</strong></span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                Shipping
-                                <span>Gratis</span>
+                                Shipping Charge
+                                <span>{{ cart.get_shipping_charge }}</span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
                                 <div>
-                                    <strong>Total amount</strong>
+                                    <strong>Payble amount</strong>
                                     {% comment %} <strong>
                                         <p class="mb-0">(including VAT)</p>
                                     </strong> {% endcomment %}
                                 </div>
-                                <span><strong>$53.98</strong></span>
+                                <span><strong>₹{{ cart.get_total }}</strong></span>
                             </li>
                         </ul>
-                        <div class="form-check">
-                            <input class="form-check-input"
-                                   type="checkbox"
-                                   value="COD"
-                                   id="paymentCOD"
-                                   name="payment_method"
-                                   onchange="handlePaymentMethodChange(this)">
-                            <label class="form-check-label" for="paymentCOD">Cash on Delivery (COD)</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input"
-                                   type="checkbox"
-                                   value="PayPal"
-                                   id="paymentPayPal"
-                                   name="payment_method"
-                                   onchange="handlePaymentMethodChange(this)">
-                            <label class="form-check-label" for="paymentPayPal">PayPal</label>
-                        </div>
-                        <button type="button" class="btn btn-primary btn-lg btn-block">Make purchase</button>
+                        <form >
+                            {% if balance.balance > 0 %}
+                    <div class="wallet">
+                        <input class="form-check-input" type="checkbox" value="wallet" id="wallet"
+                            name="wallet" onchange="getValueFromCheckbox()" >
+                        <label class="form-check-label">Take Amount From Wallet (Your wallet:{{balance.balance}})</label>
                     </div>
+                    {% endif %}
+                            {% csrf_token %}
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       value="COD"
+                                       id="paymentCOD"
+                                       name="payment_method"
+                                       onchange="handlePaymentMethodChange(this)">
+                                <label class="form-check-label" for="paymentCOD">Cash on Delivery (COD)</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       value="Razorpay"
+                                       id="paymentPayPal"
+                                       name="payment_method"
+                                       onchange="handlePaymentMethodChange(this)">
+                                <label class="form-check-label" for="paymentPayPal">Razorpay</label>
+                            </div>
+                            <input type="hidden" name="address_id" id="adid">
+                        </div>
+                    </form>
+                    <button 
+                class="btn btn-primary btn-lg btn-block" onclick="function1()"
+                data-bs-toggle="modal" data-bs-target="#exampleModal">Make purchase</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<!-- checkout end-->
+<!-- Modal -->
+<div class="modal fade"
+     id="exampleModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="exampleModalLongTitle"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'order' %}" method="post" class="pay-form" id="pay-form">
+                    {% csrf_token %}
+                    <div class="card mr-2">
+                        <div class="card-body bg-light">
+                            <h5 class="card-title">To Address</h5>
+                            <input type="text" id="idpassed" name="idpassed" value="" hidden>
+                            <div class="row mb-4">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="mname"><strong>Name:</strong></label>
+                                        <input type="text" id="mname" class="form-control" readonly>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="mhouseno"><strong>House No:</strong></label>
+                                        <input type="text" id="mhouseno" class="form-control" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-4">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="mhousename"><strong>House Name:</strong></label>
+                                        <input type="text" id="mhousename" class="form-control" readonly>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="mstreet"><strong>Street:</strong></label>
+                                        <input type="text" id="mstreet" class="form-control" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-4">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="mcity"><strong>City:</strong></label>
+                                        <input type="text" id="mcity" class="form-control" readonly>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="mstate"><strong>State:</strong></label>
+                                        <input type="text" id="mstate" class="form-control" name="test" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-4">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="mcountry"><strong>Country:</strong></label>
+                                        <input type="text" id="mcountry" class="form-control" name="test" readonly>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="mzip"><strong>Postal Code:</strong></label>
+                                        <input type="text" id="mzip" class="form-control" name="test" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="mnumber"><strong>Phone Number:</strong></label>
+                                <input type="text" id="mnumber" class="form-control" name="test" readonly>
+                            </div>
+                        </div>
+                    </div>
+                
+                    
+                    {% for items in cart_items %}
+                        <div class="card shadow-0 border mb-4 mt-3">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <img src="{{ items.product.Product_Image.url }}"
+                                             class="img-fluid"
+                                             alt="Phone">
+                                    </div>
+                                    <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                                        <p class="text-muted mb-0">{{ items.product.Product_name }}</p>
+                                    </div>
+                                    <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                                        <p class="text-muted mb-0 small">{{ items.product_size.size }}</p>
+                                    </div>
+                                    <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                                        <p class="text-muted mb-0 small">Qty: {{ items.quantity }}</p>
+                                    </div>
+                                    <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                                        <p class="text-muted mb-0 small">₹{{ items.get_subtotal }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <div class="subtotal d-flex justify-content-between align-items-center">
+                        <h5>Total Quantity</h5>
+                        <h5>{{ cart.get_total_quantity }}</h5>
+                    </div>
+                    <div class="subtotal d-flex justify-content-between align-items-center">
+                        <h5>Total Price</h5>
+                        <h5>₹{{ cart.get_total_price }}</h5>
+                    </div>
+                    <div class="subtotal d-flex justify-content-between align-items-center">
+                        <h5>Offer Price</h5>
+                        <h5>₹{{ cart.get_price_difference }}</h5>
+                    </div>
+                    <div class="shipping d-flex justify-content-between align-items-center">
+                        <h5>Shipping</h5>
+                        <h5>₹{{ cart.get_shipping_charge }}</h5>
+                    </div>
+                    <div class="order-total d-flex justify-content-between align-items-center">
+                        <h5>Order Total</h5>
+                        <h5 id="paymentAmount">₹</h5>
+                    </div>
+                    <input id="wallet_modal" name="wallet_modal" value="" hidden>
+                        <input id="gettotal" name="gettotal" value="{{cart.get_total}}" hidden>
+                        <input id="balance" name="balance" value="{{balance.balance}}" hidden>
+                    <div class="order-total d-flex justify-content-between align-items-center">
+                        <h5>Payment Method</h5>
+                        <h5 id="payment_modal" name="payment_model" value=""></h5>
+                        <input id="payment_modal2" name="payment_modal2" value="" hidden>
+                    </div>
+                </div>
+                <div class="modal-footer d-flex justify-content-center">
+                    <button type="submit" class="btn btn-primary">Confirm Order</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
-        function function1() {
-            var selectAddress = document.getElementById("selectAddress");
-            var selectedOption = selectAddress.options[selectAddress.selectedIndex];
-            var selectedValue = selectedOption.value;
-            
-            if (selectedValue === "none") {
+    function function1() {
+        var selectAddress = document.getElementById("selectAddress");
+        var selectedOption = selectAddress.options[selectAddress.selectedIndex];
+        var selectedValue = selectedOption.value;
+        
+        if (selectedValue === "none") {
                 // Clear the address fields
                 document.getElementById('Name').value = "";
                 document.getElementById('Email').value = "";
                 document.getElementById('number').value = "";
+                document.getElementById('houseno').value = "";
+                document.getElementById('housename').value = "";
                 document.getElementById('street').value = "";
                 document.getElementById('city').value = "";
                 document.getElementById('state').value = "";
@@ -198,20 +385,39 @@
                 var name = selectedOption.getAttribute("data-name");
                 var email = selectedOption.getAttribute("data-email");
                 var number = selectedOption.getAttribute("data-number");
+                var houseno = selectedOption.getAttribute("data-houseno");
+                var housename = selectedOption.getAttribute("data-housename");
                 var street = selectedOption.getAttribute("data-street");
                 var city = selectedOption.getAttribute("data-city");
                 var state = selectedOption.getAttribute("data-state");
                 var country = selectedOption.getAttribute("data-country");
                 var zip = selectedOption.getAttribute("data-zip");
+                var adid = selectedOption.getAttribute("data-id");
 
                 document.getElementById('Name').value = name;
                 document.getElementById('Email').value = email;
                 document.getElementById('number').value = number;
+                document.getElementById('houseno').value = houseno;
+                document.getElementById('housename').value = housename;
                 document.getElementById('street').value = street;
                 document.getElementById('city').value = city;
                 document.getElementById('state').value = state;
                 document.getElementById('country').value = country;
                 document.getElementById('zip').value = zip;
+                document.getElementById('adid').value = adid;
+
+                document.getElementById('mnumber').value=number;
+                document.getElementById('idpassed').value=adid
+                document.getElementById('mzip').value=zip;
+                document.getElementById('mcountry').value=country;
+                document.getElementById('mstate').value=state;
+                document.getElementById('mcity').value=city;
+                document.getElementById('mstreet').value=street;
+                document.getElementById('mname').value=name;
+                document.getElementById('mhousename').value=housename 
+                document.getElementById('mhouseno').value=houseno          
+
+
             }
         }
         function handlePaymentMethodChange(checkbox) {
@@ -222,6 +428,118 @@
                     checkbox.checked = false;
                 }
             });
+
+            document.getElementById('payment_modal').innerText = event.target.value
+            document.getElementById('payment_modal2').value = event.target.value
         }
+        function getValueFromCheckbox() {
+            var checkboxValue = $("#wallet").is(":checked");
+            console.log("Checkbox value:", checkboxValue);
+            document.getElementById('wallet_modal').value=checkboxValue
+            $("#modalCheckboxValue").text(checkboxValue);
+        }
+    </script>
+    <script>
+
+        document.getElementById('pay-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+            var payment_method = document.getElementById('payment_modal2').value;
+            console.log("value of method modal", payment_method);
+            if (payment_method === 'COD') {
+                this.submit();
+            } else if (payment_method === 'Razorpay') {
+                console.log("inside rasorpay")
+                var formData = $('form').serialize();
+                console.log(formData)
+                var url = "{% url 'razorpay_payment' %}";
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: formData,
+                    success: function (res) {
+                        if (res.success) {
+                            console.log(res.order_id);
+                            var options = {
+                                "key": "" + res.key_id + "",
+                                "amount": "" + res.amount + "",
+                                "currency": "INR",
+                                "name": "Zsonicx",
+                                "description": "Test Transaction",
+                                "image": "/images/resources/dclogo.png",
+                                "order_id": "" + res.order_id + "",
+                                "handler": function (response) {
+                                    var form = $('.pay-form');
+                                    var url = form.attr('action');
+                                    var method = form.attr('method');
+                                    $('<input>').attr({
+                                        type: 'hidden',
+                                        name: 'paymentMethod',
+                                        value: response.razorpay_payment_id
+                                    }).appendTo(form);
+
+                                    form.attr('action', "{% url 'order' %}");
+                                    form.attr('method', 'POST');
+                                    form.unbind('submit').submit();
+                                    form.attr('action', url);
+                                    form.attr('method', method);
+                                },
+                                "prefill": {
+                                    "name": "" + res.name + "",
+                                    "email": "" + res.email + "",
+                                    "contact": "" + res.mobile + ""
+                                },
+                                "notes": {
+                                    "address": "Razorpay Corporate Office"
+                                },
+                                "theme": {
+                                    "color": "#000"
+                                }
+                            };
+                            var rzp1 = new Razorpay(options);
+                            console.log(options)
+
+
+                            rzp1.on('payment.failed', function (response) {
+                                console.log('inside on')
+                                alert("Payment Failed");
+                            });
+                            rzp1.open();
+                        } else {
+
+                            alert(res.msg);
+                        }
+                    }
+                });
+            }
+        })
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('#exampleModal').on('shown.bs.modal', function() {
+                console.log("here")
+
+        var wallet = document.getElementById('wallet_modal').value;
+        console.log(wallet)
+       var total = document.getElementById('gettotal').value;
+        console.log(total)
+        var balance = document.getElementById('balance').value;
+        console.log(balance)
+        var paymentAmount;
+
+if (wallet === "true") {
+    if (balance > total) {
+        paymentAmount = 0;
+    } else {
+        paymentAmount = total - balance;
+    }
+} else {
+    paymentAmount = total;
+}
+
+
+document.getElementById('paymentAmount').textContent = "₹" + paymentAmount;
+})
+        })
 </script>
-{% endblock %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+    {% endblock %}

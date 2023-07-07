@@ -1,0 +1,316 @@
+{% extends 'user/ubase_page.html' %}
+
+{% load static %}
+
+{% block additional_styles %}
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="{% static 'css/profile.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="row gutters">
+            <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="account-settings">
+                            <div class="user-profile">
+                                <form action="{% url 'update_photo' %}" method="post" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="user-avatar">
+                                        <img id="avatar-img"
+                                             {% if profile_pic %} src="{{ profile_pic.profile_pic.url }}" {% else %} src="https://bootdey.com/img/Content/avatar/avatar7.png" {% endif %}
+                                             alt="Maxwell Admin">
+                                        <input type="file" id="avatar-input" accept="image/*" style="display: none"
+                                               onchange="loadAvatar(event)" name="profile_pic">
+                                        <label for="avatar-input" class="add-photo-icon">
+                                            <i class="fas fa-camera"></i>
+                                        </label>
+                                        <div class="mt-2">
+                                            <input type="submit" class="btn btn-primary" value="addphoto">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <h5 class="user-name">{{ user.name }}</h5>
+                            <h6 class="user-email">{{ user.email }}</h6>
+                        </div>
+                        <div class="row p-4">
+                            <button type="button" class="btn btn-primary btn-block btn-lg w-100"
+                                    onclick="window.location.href='{% url 'profile' %}'">Back
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="container pt-4">
+                            <div class="row align-items-end mb-4 pb-2">
+                                {% for order in order %}
+                                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                                        <div class="card border-0 bg-light rounded shadow">
+                                            <div class="card-body p-4">
+                                                <div>
+                                                    <span class="badge rounded-pill bg-success float-md-end mb-3 mb-sm-0">{{ order.order_date.date }}</span>
+                                                </div>
+                                                <div>
+                                                    <h5>Order No: {{ order.order_id }}</h5>
+                                                </div>
+                                                <div class="mt-3">
+                                                    <span class="text-muted d-block"><i class="fa fa-home"
+                                                                                       aria-hidden="true"></i>
+                                                        <a href="#" target="_blank"
+                                                           class="text-muted">{{ order.to_address.house_name }},
+                                                            <br>{{ order.to_address.house_no }},
+                                                            {{ order.to_address.street }},
+                                                            {{ order.to_address.city }},
+                                                            {{ order.to_address.state }},
+                                                            {{ order.to_address.country }},
+                                                            {{ order.to_address.postal_code }}</a>
+                                                    </span>
+                                                    <span class="text-muted d-block"><i class="fa fa-shopping-cart"
+                                                                                       aria-hidden="true"></i>
+                                                        {% for item in order.orderitems_set.all %}
+                                                            {{ item.product.Product_name }},
+                                                        {% endfor %}
+                                                    </span>
+                                                </div>
+                                                <div class="d-flex justify-content-center mt-3">
+                                                    <button class="btn btn-primary view-btn" type="button"
+                                                            data-toggle="modal"
+                                                            data-target="#exampleModal"
+                                                            data-order-id="{{ order.order_id }}"
+                                                            data-order-date="{{ order.order_date.date }}"
+                                                            data-order-address="{{ order.to_address.house_no }}, {{ order.to_address.street }}, {{ order.to_address.city }}, {{ order.to_address.state }}, {{ order.to_address.country }}, {{ order.to_address.postal_code }}"
+                                                            data-order-productname="{% for item in order.orderitems_set.all %}{{ item.product.Product_name }},{% endfor %}"
+                                                            data-order-productimage.url="{% for item in order.orderitems_set.all %}{{ item.product.Product_Image.url }},{% endfor %}"
+                                                            data-order-productsize="{% for item in order.orderitems_set.all %}{{ item.product_size.size }},{% endfor %}"
+                                                            data-order-productquantity="{% for item in order.orderitems_set.all %}{{ item.quantity }},{% endfor %}"
+                                                            data-order-productprice="{% for item in order.orderitems_set.all %}{{ item.amount }},{% endfor %}"
+                                                            data-order-itemstatus="{% for item in order.orderitems_set.all %}{{ item.order_status }},{% endfor %}"
+                                                            data-order-itemids="{% for item in order.orderitems_set.all %}{{ item.id }},{% endfor %}"
+                                                    >View
+                                                    </button>
+                                                    <button class="btn btn-danger ml-1" type="button"
+                                                            data-toggle="modal"
+                                                            data-target="#exampleModal">Cancel
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% if forloop.counter|divisibleby:3 and not forloop.last %}
+                                </div>
+                                <div class="row align-items-end mb-4 pb-2">
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+  <!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+aria-hidden="true">
+<div class="modal-dialog" role="document">
+   <div class="modal-content">
+       <div class="modal-header">
+           <h5 class="modal-title" id="exampleModalLabel">Order Details</h5>
+           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+           </button>
+       </div>
+       <!--modal body start-->
+       <div class="modal-body">
+           <span>Order No: <span id="order-id"></span></span><br>
+           <span>Order Date: <span id="order-date"></span></span><br>
+           <span>Shipping Address: <span id="order-address"></span></span><br>
+           <span>Order status :</span>
+
+           <div class=""  id="order-items-container">
+    
+        </div>
+       </div>
+
+       <!--modal body end-->
+       <div class="modal-footer">
+           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+           <button type="button" class="btn btn-primary">Save changes</button>
+       </div>
+   </div>
+</div>
+</div>
+<!-- Modal -->
+<div id="returnModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="returnModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="returnModalLabel">Return Item</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="returnForm" method="POST" action="{% url 'returnorderitem' %}">
+            {% csrf_token %}
+            <input type="text" name="itemid" id="returnItemId">
+            <input type="text" name="order_id" id="returnOrderId">
+            <div class="form-group">
+              <label for="returnReason">Reason for return:</label>
+              <select class="form-control" id="returnReason" name="return_reason">
+                <option value="defective">Defective or damaged product</option>
+                <option value="poor_quality">Poor quality or not as described</option>
+                <option value="wrong_item">Item is not what I ordered</option>
+                <option value="dislike">Don't like the product</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="form-group" id="otherReasonGroup" style="display: none;">
+              <label for="otherReason">Other Reason:</label>
+              <input type="text" class="form-control" id="otherReason" name="other_reason">
+            </div>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary" id="submitReturn">Submit</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#exampleModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var orderId = button.data('order-id');
+            var orderDate = button.data('order-date');
+            var orderAddress = button.data('order-address');
+            var orderProductNames = button.data('order-productname');
+            var orderProductImages = button.data('order-productimage.url');
+            var orderProductSizes = button.data('order-productsize');
+            var orderProductQuantities = button.data('order-productquantity');
+            var orderProductPrices = button.data('order-productprice');
+            var orderItemStatus = button.data('order-itemstatus');
+            var orderItemIds = button.data('order-itemids'); // Add this line
+            console.log(orderItemIds,'hi')
+    
+            var modal = $(this);
+            modal.find('#order-id').text(orderId);
+            modal.find('#order-date').text(orderDate);
+            modal.find('#order-address').text(orderAddress);
+    
+            var orderItemsContainer = modal.find('#order-items-container');
+            orderItemsContainer.empty();
+    
+            var productNames = orderProductNames.split(',');
+            var productImages = orderProductImages.split(',');
+            var productSizes = orderProductSizes.split(',');
+            var productQuantities = orderProductQuantities.split(',');
+            var productPrices = orderProductPrices.split(',');
+            var itemstatus = orderItemStatus.split(',');
+            var ItemIds = orderItemIds.split(',');
+            
+            for (var i = 0; i < productNames.length-1; i++) {
+                var orderItemCard = '<div class="card shadow-0 border mb-4 mt-3">' +
+                    '<div class="card-body">' +
+                    '<div class="row">' +
+                    '<div class="col-md-2">' +
+                    '<img src="' + productImages[i] + '" class="img-fluid" alt="Phone">' +
+                    '</div>' +
+                    '<div class="col-md-2 text-center d-flex justify-content-center align-items-center">' +
+                    '<p class="text-muted mb-0">' + productNames[i] + '</p>' +
+                    '</div>' +
+                    '<div class="col-md-2 text-center d-flex justify-content-center align-items-center">' +
+                    '<p class="text-muted mb-0 small">' + productSizes[i] + '</p>' +
+                    '</div>' +
+                    '<div class="col-md-2 text-center d-flex justify-content-center align-items-center">' +
+                    '<p class="text-muted mb-0 small">Qty: ' + productQuantities[i] + '</p>' +
+                    '</div>' +
+                    '<div class="col-md-2 text-center d-flex justify-content-center align-items-center">' +
+                    '<p class="text-muted mb-0 small">₹' + productPrices[i] + '</p>' +
+                    '</div>' +
+                    '<div class="col-md-2 text-center d-flex justify-content-center align-items-center">' +
+                    '<p class=" text-muted mb-0 small ">' + itemstatus[i] + '</p>' +
+                    '<p class=" text-muted mb-0 small " hidden>' + ItemIds[i] + '</p>' +
+                    
+                    '</div>' +
+                    '<div class="d-flex justify-content-end">' +
+                        (itemstatus[i] === 'Delivered' ?
+                            '<button type="button" class="btn btn-danger return-button" id="return-button-' + i + '" data-product-name="' + orderProductNames[i] + '" data-item-id="' + ItemIds[i] + '" data-toggle="modal" data-target="#returnModal" data-order-id="' + orderId + '">Return</button>' :
+                            '<button type="button" class="btn btn-danger cancel-button" id="cancel-button-' + i + '" data-product-name="' + orderProductNames[i] + '" data-item-id="' + ItemIds[i] + '"' +
+                            (itemstatus[i] === 'Returned' ? ' hidden' : '') + '>Cancel</button>'
+                        ) +
+                    '</div>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>';
+                orderItemsContainer.append(orderItemCard);
+            }
+            
+            
+            var cancelBtns = modal.find('.cancel-button');
+            cancelBtns.click(function () {
+                var productName = $(this).data('product-name');
+                var itemId = $(this).data('item-id');
+                console.log(itemId)
+                cancelOrderItem(itemId);
+            });
+            var returnBtns = modal.find('.return-button');
+            returnBtns.click(function(){
+                var itemId = $(this).data('item-id');
+                var order_id = $(this).data('order-id');
+                console.log(itemId,order_id,'hloooo')
+                // Set the item ID and order ID in the modal form
+                $('#returnItemId').val(itemId);
+                $('#returnOrderId').val(order_id);
+                
+                // Show the modal
+                $('#returnModal').modal('show');  
+            })
+        });
+        
+        function cancelOrderItem(itemId) {
+            $.ajax({
+                type: 'POST',
+                url: '{% url "cancelorderitem" %}',
+                data: {
+                    itemId: itemId,
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                },
+                success: function (response) {
+                    // Handle the success response
+                    console.log(response);
+                    window.location.reload()
+                },
+                error: function (xhr, errmsg, err) {
+                    // Handle the error response
+                    console.log(err);
+                }
+            });
+        }
+        // Function to return an order item
+        function returnOrderItem(itemId) {
+            // Add your code to handle the return action for the corresponding item
+            // ...
+        }
+    });
+    
+</script>
+{% endblock %}

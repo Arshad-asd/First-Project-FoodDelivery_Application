@@ -184,6 +184,18 @@
                 </div>
             </div>
         </section> {% endcomment %}
-
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.all.min.js"></script>
+        {% if error %}
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                swal({
+                    title: "Error",
+                    text: "{{ error }}",
+                    icon: "error",
+                    button: "OK"
+                });
+            });
+        </script>
+    {% endif %}
        
 {% endblock content %}

@@ -16,6 +16,54 @@
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="{% static 'css/home.css' %}" rel="stylesheet" />
     <style>
+      .btn1 {
+        display: inline-block;
+        padding: .75rem 1.25rem;
+        border-radius: 10rem;
+        color: #fff;
+        text-transform: uppercase;
+        font-size: 1rem;
+        letter-spacing: .15rem;
+        transition: all .3s;
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+      }
+      
+      .btn1:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color:gold;
+        border-radius: 10rem;
+        z-index: -2;
+      }
+      
+      .btn1:before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0%;
+        height: 100%;
+        background-color:white;
+        transition: all .3s;
+        border-radius: 10rem;
+        z-index: -1;
+      }
+      
+      .btn1:hover {
+        color:gold;
+      }
+      
+      .btn1:hover:before {
+        width: 100%;
+      }
+      
+      
         ::-webkit-scrollbar-track {
             background-color: transparent;
           }
@@ -60,7 +108,6 @@
             width:35%;
             border:none;
             outline:none;
-            background-color:#F5990F;
             color:white;
             font-weight-:700;
             border-radius:60px;
@@ -91,7 +138,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                         <li class="nav-item"><a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a></li>
-                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="#!">Contact</a></li>
+                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="{% url 'contact' %}">Contact</a></li>
                         <li class="nav-item"><a class="nav-link active" aria-current="page" href="#!">Specials</a></li>
                         <li class="nav-item"><a class="nav-link" href="#!">About</a></li>
                         <li class="nav-item dropdown">

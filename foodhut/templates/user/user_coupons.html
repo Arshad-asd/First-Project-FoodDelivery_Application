@@ -1,0 +1,145 @@
+{% extends 'user/ubase_page.html' %}
+{% load static %}
+{% block additional_styles %}
+.corner-banner {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: red;
+    padding: 5px;
+    border-radius: 0 10px 0 10px;
+}
+
+.card-body {
+    text-align: center;
+    padding: 20px;
+}
+
+.discount-text {
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.expiration-label {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 5px;
+
+}
+
+.expiration-text {
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+{% endblock %}
+{% block head %}
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="{% static 'css/profile.css' %}" rel="stylesheet" />
+{% endblock %}
+{% block content %}
+    <div class="container mt-5">
+        <div class="row gutters">
+            <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
+                <!-- User Profile Card -->
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="account-settings">
+                            <div class="user-profile">
+                                <!-- Profile Picture Form -->
+                                <form action="{% url 'update_photo' %}"
+                                      method="post"
+                                      enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="user-avatar">
+                                        <img id="avatar-img"
+                                             {% if profile_pic %} src="{{ profile_pic.profile_pic.url }}" {% else %} src="{% static 'img/images.png' %}" {% endif %}
+                                             alt="Profile Picture">
+                                        <input type="file"
+                                               id="avatar-input"
+                                               accept="image/*"
+                                               style="display: none"
+                                               onchange="loadAvatar(event)"
+                                               name="profile_pic">
+                                        <label for="avatar-input" class="add-photo-icon">
+                                            <i class="fas fa-camera"></i>
+                                        </label>
+                                    </div>
+                                    <div class="mt-2">
+                                        <input type="submit" class="btn btn-primary" value="Update">
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- View Order Button -->
+                            <div class="row p-4">
+                                <button type="button"
+                                        class="btn btn-primary btn-block btn-lg w-100"
+                                        onclick="window.location.href='{% url 'order_details' %}'">View Order</button>
+                                <button type="button"
+                                        class="btn btn-primary btn-block btn-lg w-100 mt-2"
+                                        data-toggle="modal"
+                                        data-target="#exampleModalCenter">Add Adderess</button>
+                                <button type="button"
+                                        class="btn btn-primary btn-block btn-lg w-100"
+                                        onclick="window.location.href='{% url 'profile' %}'">back</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Address Cards Section -->
+            <div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="row gutters">
+                            <h6 class="mb-2 text-primary">Coupons</h6>
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 d-flex flex-wrap">
+                              <!--coupns cad starting-->
+                               {% for coupon in coupons %}
+                              <div class="card mr-2 mb-2" style="width: 15rem; position: relative;">
+                                <div class="card-body bg-warning d-flex flex-column align-items-center justify-content-center" style="border-radius: 10px">
+                                    <div class="mt-2">
+                                    <h4>{{coupon.code}}</h4>
+                                    <p>{{coupon.description}}</p>
+                                    <p></p>
+                                </div>
+                                </div>
+                                <div class="corner-banner">
+                                    <span class="discount-text" >{{ coupon.discount}}%off</span>
+                                </div>
+                                <div class="expiration-label">
+                                    <span class="badge badge-success"><i class="fas fa-clock"></i>End in: {{coupon.end_date}}</span>
+                                </div>
+                            </div>
+                            
+                            {% endfor %}
+                             <!--coupons card ending-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<!-- JavaScript dependencies -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Load Avatar Image -->
+<script>
+        function loadAvatar(event) {
+            var output = document.getElementById('avatar-img');
+            output.src = URL.createObjectURL(event.target.files[0]);
+            output.onload = function () {
+                URL.revokeObjectURL(output.src)
+            }
+        }
+        
+</script>
+{% endblock %}

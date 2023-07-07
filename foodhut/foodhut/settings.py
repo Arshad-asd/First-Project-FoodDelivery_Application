@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 import os
 from pathlib import Path
+import dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -143,3 +144,7 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'arshaarshad21@gmail.com'
 EMAIL_HOST_PASSWORD = 'fxblkcuupoztubov'
+
+RAZOR_KEY_ID = 'rzp_test_WAEZtOaqhUmQr6'
+RAZOR_KEY_SECRET ='YvT1XGQWA6h8EKmb3tht8mxa'
+dotenv.load_dotenv(os.path.join(BASE_DIR, '.env'))

@@ -51,6 +51,7 @@ nav{
         <th>Sizes</th>
         <th>Prices</th>
         <th>Quantity</th>
+        <th>Status</th>
         <th>Actions</th>
       </tr>
     </thead>
@@ -93,12 +94,26 @@ nav{
             {% endfor %}
         </td>
         <td>
+          {% if product.is_deleted %}
+          <span class="badge badge-danger rounded-pill d-inline">Un Avilable</span>
+          {% else %}
+          <span class="badge badge-success rounded-pill d-inline">Avilable</span>
+          {% endif %}
+        </td>
+        <td>
           <form action="{% url 'edit_product' product.id %}" class="d-inline">{% csrf_token %}
-            <input type="submit" class="btn btn-success" value="Edit">
+            <button type="submit" class="btn btn-success"><i class="fas fa-edit"></i></button>
           </form>
+          {% if product.is_deleted %}
+          <form action="{% url 'undo' product.id %}" method="post" class="d-inline">{% csrf_token %}
+            <button type="submit" class="btn btn-danger"><i class="fa fa-undo" aria-hidden="true"></i></button>
+          </form>
+          {% else %}
           <form action="{% url 'delete_product' product.id %}" method="post" class="d-inline">{% csrf_token %}
-            <input type="submit" class="btn btn-danger" value="Delete">
+            <button type="submit" class="btn btn-danger"><i class="fa fa-ban" aria-hidden="true"></i>
+          </button>
           </form>
+          {% endif %}
         </td>
         {% endfor %}
     </tbody>

@@ -137,7 +137,7 @@
             <label for="size-{{ size.size }}">{{ size.size|title }}</label>
             <div class="d-flex">
                 <input type="number" class="form-control mx-2" id="price-{{ size.size }}" name="price-{{ size.size }}"  min="0" value="{{ size.price }}" >
-                <input type="number" class="form-control mx-2" id="offer-price-medium" name="offer-price-medium"  min="0" placeholder="Offer price for medium size">
+                <input type="number" class="form-control mx-2" id="offer-price-{{size.size}}" name="offer-price-{{size.size}}"  min="0" value="{{ size.offer_price }}">
                 <input type="number" class="form-control mx-2" id="productCount-{{ size.size }}"  min="0" name="productCount-{{ size.size }}" value="{{ size.Quantity }}">
               
             </div>

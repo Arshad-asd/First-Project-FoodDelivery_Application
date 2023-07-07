@@ -1,102 +1,190 @@
 {% extends 'admin/base_page.html' %}
 {% load static %}
+
 {% block title %}products{% endblock %}
+
 {% block additional_styles %}  
-.mt-5{
-    margin-top:6rem!important;
-    
-}
-nav{
-    background-color:  rgb(255 238 7 / 70%);
-
+.mt-5 {
+  margin-top: 6rem!important;
 }
 
+nav {
+  background-color: rgb(255 238 7 / 70%);
+}
 {% endblock %}
-{% block content%}
 
+{% block content %}
 <div class="container mt-5">
-<nav class="navbar navbar-expand-lg navbar-light  ">
-    <div class="container-fluid ">
-      <a class="navbar-brand " href="#"><i class="fa fa-truck" aria-hidden="true"></i></a>
+  <nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#"><i class="fa fa-truck" aria-hidden="true"></i></a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <form class="d-flex px-4 ms-auto me-4">
-            <input class="form-control me-2 rounded-pill border-success" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success " type="submit">  <i class="fas fa-search"></i></button>
-          </form>
+          <input class="form-control me-2 rounded-pill border-success" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success" type="submit"><i class="fas fa-search"></i></button>
+        </form>
       </div>
     </div>
   </nav>
 
-  <table class="table align-middle mb-0 bg-white mt-2 ">
+  <table class="table align-middle mb-0 bg-white mt-2">
     <thead class="bg-light">
       <tr>
-        <th>order_id</th>
-        <th>Product_id</th>
+        <th>Order_id</th>
         <th>User</th>
         <th>Product name</th>
-        <th>Category</th>
         <th>Sizes</th>
-        <th>Amount</th>
-        <th>Quantity</th>
+        <th>Price</th>
+        <th>Qty</th>
+        <th>Total</th>
+        <th>Pay_mthd</th>
+        <th>Ord_date</th>
         <th>Status</th>
         <th>Action</th>
       </tr>
     </thead>
     <tbody>
+      {% for order in orders %}
       <tr>
-        <td>1</td>
-        <td>#001</td>
+        <td>{{ order.order_id }}</td>
         <td>
-            <div class="d-flex align-items-center ">
-              <img
-                  src="https://mdbootstrap.com/img/new/avatars/8.jpg"
-                  alt=""
-                  style="width: 45px; height: 45px"
-                  class="rounded-circle border border-success "
-                  />
-              <div class="ms-3">
-                <p class="fw-bold mb-1">Arshad</p>
-                <p class="text-muted mb-0">arshad@gamil.com</p>
-              </div>
-            </div>
-          </td>
-
-        <td>
-          <div class="d-flex align-items-center ">
+          <div class="d-flex align-items-center">
             <img
-                src="{% static 'img/Rectangle 243.png '%}"
-                alt=""
-                style="width: 45px; height: 45px"
-                class="rounded-circle border border-success "
-                />
+              src="https://mdbootstrap.com/img/new/avatars/8.jpg"
+              alt=""
+              style="width: 45px; height: 45px"
+              class="rounded-circle border border-success"
+            />
             <div class="ms-3">
-              <p class="fw-bold mb-1">Beef Burger</p>
-              <p class="text-muted mb-0"><i class="fa fa-star warning" style="color:gold" aria-hidden="true"></i><i class="fa fa-star" style="color:gold" aria-hidden="true"></i><i class="fa fa-star" style="color:gold" aria-hidden="true"></i><i class="fa fa-star" style="color:gold" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i></p>
+              <p class="fw-bold mb-1">{{ order.user.name }}</p>
+              <p class="text-muted mb-0">{{ order.user.email }}</p>
             </div>
           </div>
         </td>
+
         <td>
-          <p class="fw-normal mb-1">Burger</p>
-          <p class="text-muted mb-0"></p>
-        <td>
-            <p class="fw-bold mb-1">M</p>
+          {% for order_items in order.orderitems_set.all %}
+          <div class="d-flex align-items-center">
+            <img
+              src="{{ order_items.product.Product_Image.url }}"
+              alt=""
+              style="width: 45px; height: 45px"
+              class="rounded-circle border border-success"
+            />
+            <div class="ms-3">
+              <p class="fw-bold mb-1">{{ order_items.product.Product_name }}</p>
+              <p class="text-muted mb-0">
+                <i class="fa fa-star warning" style="color:gold" aria-hidden="true"></i>
+                <i class="fa fa-star" style="color:gold" aria-hidden="true"></i>
+                <i class="fa fa-star" style="color:gold" aria-hidden="true"></i>
+                <i class="fa fa-star" style="color:gold" aria-hidden="true"></i>
+                <i class="fa fa-star" aria-hidden="true"></i>
+              </p>
+            </div>
+          </div>
+          {% endfor %}
         </td>
         <td>
-            <p class="fw-bold mb-1">₹ 100</p>
+          {% for order_items in order.orderitems_set.all %}
+          <p class="fw-bold mb-1">{{ order_items.product_size.size }}</p>
+          {% endfor %}
         </td>
         <td>
-            <p class="fw-bold mb-1">1</p>
+          {% for order_items in order.orderitems_set.all %}
+          <p class="fw-bold mb-1">₹{{ order_items.amount }}</p>
+          {% endfor %}
         </td>
-        <td><span class="badge badge-success rounded-pill d-inline">Shpping</span></td>
         <td>
-            <form action="" method="post" class="d-inline">{% csrf_token %}
-              <input type="submit" class="btn btn-danger" value="Cancil">
-            </form>
-          </td>
+          {% for order_items in order.orderitems_set.all %}
+          <p class="fw-bold mb-1">{{ order_items.quantity }}</p>
+          {% endfor %}
+        </td>
+        <td>
+          <p class="fw-bold mb-1">₹{{ order.payment_amount }}</p>
+        </td>
+        <td>
+          {% for order_items in order.orderitems_set.all %}
+          <p class="fw-bold mb-1">{{ order.payment_method }}</p>
+          {% endfor %}
+        </td>
+        <td>
+          {% for order_items in order.orderitems_set.all %}
+          <p class="fw-bold mb-1">{{ order.order_date.date }}</p>
+          {% endfor %}
+        </td>
+        <td>
+          {% for order_items in order.orderitems_set.all %}
+          <div class="badge badge-success rounded-pill d-inline">{{ order_items.order_status }}<br></div><br>
+          {% endfor %}
+        </td>
+        <td>
+          {% for order_items in order.orderitems_set.all %}
+          <button type="button" class="btn btn-danger edit-button mt-1" data-toggle="modal" data-target="#editModal" data-order-id="{{ order_items.id }}"><i class="fas fa-edit"></i></button>
+          {% endfor %}
+        </td>
+   
+      </tr>
+      {% endfor %}
     </tbody>
   </table>
+
+  {% for order in orders %}
+  <!-- Modal -->
+  <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel{{ order.order_id }}" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editModalLabel{{ order.order_id }}">Edit Order Status</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="{% url 'change_order_status' %}" method="post">
+            {% for order_items in order.orderitems_set.all %}
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="orderStatus{{ order_items.id }}">Order Status</label>
+              <select class="form-control" id="orderStatus{{ order_items.id}}" name="order_status">
+                {% for choice in choices %}
+                <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <input type="text"name="order_item_id" id="orderdetails" >
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            {% endfor %}
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
 </div>
-{% endblock content%}
+
+{% block additional_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjd04D2kBIFXQpeoTz1HIcje39wm4jDKdf19U8g14ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded',()=>{
+    const statusButtons = document.querySelectorAll('.edit-button');
+    statusButtons.forEach(button =>{
+      button.addEventListener('click',(event) => {
+        event.preventDefault();
+        const orderId = button.dataset.orderId;
+        openModal(orderId);
+      });
+    });
+  });
+  function openModal(orderId){
+    document.getElementById('orderdetails').value = orderId;
+    const modal = new bootstrap.Modal(document.getElementById('editModal')); // Initialize the modal
+    modal.show();
+  }
+</script>
+{% endblock additional_scripts %}
+{% endblock content %}

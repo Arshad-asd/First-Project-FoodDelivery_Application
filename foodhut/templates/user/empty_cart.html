@@ -1,0 +1,30 @@
+{% extends 'user/ubase_page.html' %}
+{% load static %}
+{% block additional_styles %}{% endblock %}
+{% block head %}
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+{% endblock %}
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center h-100 mt-3">
+    <div class="card text-center">
+      <div class="card-body">
+        <div style="display: flex; justify-content: center; align-items: center; border-radius: 200px; height: 200px; width: 200px; background: #F8FAF5; margin: 0 auto;">
+            <i class="fas fa-shopping-cart" style="font-size: 100px;"></i>
+          </div>
+        <h1 class="mt-4">Cart is Empty</h1>
+        <p>
+          Your cart is currently empty. Start adding items to your cart to continue shopping.
+          <br>
+          We'll be in touch shortly!
+        </p>
+        <div class="mt-4">
+          <a href="{% url 'home' %}" class="btn btn-success btn-lg btn-block">Continue Shopping</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+{% endblock %}

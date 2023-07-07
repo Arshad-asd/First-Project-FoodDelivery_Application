@@ -1,0 +1,32 @@
+$(document).ready(function () {
+    $('.return-button').click(function () {
+      var itemId = $(this).data('item-id');
+      var order_id = $(this).data('order-id');
+      console.log(itemId,order_id,'hloooo')
+      // Set the item ID and order ID in the modal form
+      $('#returnItemId').val(itemId);
+      $('#returnOrderId').val(order_id);
+      
+      // Show the modal
+      $('#returnModal').modal('show');
+    });
+    
+    // Handle the change event of the return reason select
+    $('#returnReason').change(function () {
+      var selectedReason = $(this).val();
+      
+      // Show/hide the other reason input based on the selected reason
+      if (selectedReason === 'other') {
+        $('#otherReasonGroup').show();
+      } else {
+        $('#otherReasonGroup').hide();
+      }
+    });
+    
+    // Handle the click event of the submit button
+    $('#submitReturn').click(function () {
+      // Submit the form
+      $('#returnForm').submit();
+    });
+  });
+  

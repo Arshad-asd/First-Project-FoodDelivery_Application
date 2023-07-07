@@ -1,0 +1,181 @@
+{% extends 'admin/base_page.html' %}
+{% load static %}
+
+{% block title %}coupons{% endblock %}
+
+{% block additional_styles %}  
+.mt-5 {
+  margin-top: 6rem!important;
+}
+
+nav {
+  background-color: rgb(255 238 7 / 70%);
+}
+{% endblock %}
+
+{% block head %} 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" integrity="sha512-j/E9s1ttvO1LwT6RJfpCLk9zHeEWUAMzKWW2xIKB+/DBdBAdHjGL5vD+HXRP18NojR+yS5oVNRhmmrTtu9KvCg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <nav class="navbar navbar-expand-lg navbar-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">  <i class="fa fa-tag"></i>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <form class="d-flex px-4 ms-auto me-4">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCouponModal">
+              Add 
+            </button>
+            </button>          </form>
+        </div>
+      </div>
+    </nav>
+    
+    <table class="table align-middle mb-0 bg-white mt-2">
+      <thead class="bg-light">
+        <tr>
+          <th>Coupon_id</th>
+          <th>Coupon_code</th>
+          <th>Coupon_name</th>
+          <th>Discription</th>
+          <th>discount_type</th>
+          <th>applicable_type</th>
+          <th>Status</th>
+          <th>Start_date</th>
+          <th>End_date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for coupon in coupons %}
+        <tr>
+          <td>{{coupon.id}}</td>
+          <td>{{coupon.code}}</td>
+          <td>{{coupon.name}}</td>
+          <td>
+            <p>{{coupon.description}}</p>
+          </td>
+          <td>
+            {{coupon.discount_type}}
+          </td>
+          <td>
+            {{coupon.discount}}
+          </td>
+          <td>
+            <span class="badge badge-success rounded-pill d-inline">{% if coupon.active %}Active{% endif %} </span>
+          </td>
+          <td>{{coupon.start_date}}</td>
+          <td>{{coupon.end_date}}</td>
+          <td>
+            <form action="" class="d-inline">{% csrf_token %}
+              <button type="submit" class="btn btn-success"><i class="fas fa-edit"></i></button>
+            </form>
+            </button>
+          </td>
+        </tr>
+        {% endfor %}
+         
+      </tbody>
+    </table>
+<!-- Modal -->
+<div class="modal fade" id="addCouponModal" tabindex="-1" aria-labelledby="addCouponModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="addCouponModalLabel">Add Coupon</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <form method="post" action="{% url 'add_coupons' %}">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="couponCode" class="form-label">Coupon Code</label>
+            <input type="text" class="form-control" name="code" placeholder="Enter coupon code">
+          </div>
+          <div class="mb-3">
+            <label for="couponName" class="form-label">Coupon Name</label>
+            <input type="text" class="form-control" name="name" placeholder="Enter coupon name">
+          </div>
+          <div class="mb-3">
+            <label for="couponDescription" class="form-label">Coupon Description</label>
+            <textarea class="form-control" name="description" rows="3" placeholder="Enter coupon description"></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="type" class="form-label">Discount Types</label>
+            <select class="form-control" name="discount_type" >
+              <option value="amount">Amount</option>
+              <option value="percentage">Percentage</option>
+              <!-- Add more options as needed -->
+            </select>
+          <div class="mb-3">
+            <label for="discount" class="form-label">Discount</label>
+            <input type="number" class="form-control" name="discount" step="0.01" placeholder="Enter discount">
+          </div>
+          <div class="row mb-3">
+            <div class="col">
+              <label for="startDate" class="form-label">Start Date</label>
+              <input type="date" class="form-control" name="start_date">
+            </div>
+            <div class="col">
+              <label for="endDate" class="form-label">End Date</label>
+              <input type="date" class="form-control" name="end_date">
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="type" class="form-label">Applicable Types</label>
+            <select class="form-control" name="category" id="applicableTypes">
+              <option value="Category All">Category All</option>
+              <option value="Non Category">Non Category</option>
+              <option value="Category">Category</option>
+              <!-- Add more options as needed -->
+            </select>
+          </div>
+          <div class="mb-3" id="categorySelection" style="display: none;">
+            <label for="categorySelection" class="form-label">Category Selection</label>
+            <select class="form-control" name="categorySelection">
+              <option value=""></option>
+              {% for category  in categories %}
+          <option value="{{category.categoryes}}">{{category.categoryes}}</option>
+              {% endfor %}
+              <!-- Add more options as needed -->
+            </select>
+          </div>
+          <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" name="active">
+            <label class="form-check-label" for="activeCheck">Active</label>
+          </div>
+          <!-- ... -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save Coupon</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- JavaScript/jQuery code -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $('#applicableTypes').change(function() {
+      var selectedOption = $(this).val();
+      if (selectedOption === 'category') {
+        $('#categorySelection').show();
+      } else {
+        $('#categorySelection').hide();
+      }
+    });
+  });
+</script>
+
+{% endblock content %}
