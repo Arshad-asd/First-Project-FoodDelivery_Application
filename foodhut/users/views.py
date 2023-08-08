@@ -8,7 +8,9 @@ from django.contrib.auth.hashers import make_password
 import os
 from django.db.models import Sum
 # Create your views here.
-
+from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib import messages
+from .models import Product, Cart
 from django.shortcuts import render,redirect
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect,JsonResponse
 from django.contrib import messages
@@ -261,7 +263,6 @@ def category_products(request,id):
     all_categories = Category.objects.all()
     category = Category.objects.get(pk=id)
     products = Product.objects.filter(category=category,is_deleted=False)
-    print(products,111111111111111111111111111)
     product_sizes = ProductSize.objects.all()  
     paginator = Paginator(products, per_page=4)
     page_number = request.GET.get('page')
@@ -290,9 +291,7 @@ def add_to_cart_nil(request):
     print('sldkfjldskjfldfkjldsfj')
     return redirect('cart')
 
-from django.shortcuts import get_object_or_404, redirect, render
-from django.contrib import messages
-from .models import Product, Cart
+
 
 def add_to_cart(request, id):
     product = get_object_or_404(Product, pk=id)
@@ -322,22 +321,6 @@ def add_to_cart(request, id):
     return redirect('cart')
 
 
-
-@require_POST
-# def update_cart_item(request, id):
-#     cart_item = get_object_or_404(CartItem, id=id)
-#     new_quantity = int(request.POST.get('quantity', 0))
-
-#     # Retrieve the available stock for the product size
-#     available_stock = cart_item.product_size.Quantity
-
-#     if new_quantity >= 0 and new_quantity <= available_stock:
-#         cart_item.quantity = new_quantity
-#         cart_item.save()
-#     else:
-#         error_message = f"Invalid quantity. Please enter a value between 0 and {available_stock}."
-#         messages.error(request, error_message)
-#     return redirect('cart')
 
 def update_cart_item(request, id):
     user=request.user
