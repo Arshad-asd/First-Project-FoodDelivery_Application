@@ -38,9 +38,7 @@ from foodhut.settings import RAZOR_KEY_ID,RAZOR_KEY_SECRET
 
 
 def razorpay_payment(request):
-    print(5555555555555555555555)
     user=request.user
-    print(user.mobile,222222222222222222222222222222)
     if user is None:
          return render(request,'user/signup.html')
     
@@ -57,7 +55,6 @@ def razorpay_payment(request):
     }
     }
     order = client.order.create(data=DATA)
-    print(8888888888888888888888888888888)
     res = {
         'success': True,
         'key_id': RAZOR_KEY_ID,
