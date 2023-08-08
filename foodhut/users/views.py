@@ -1014,7 +1014,6 @@ def change_order_status(request):
     if request.method == 'POST':
         order_item_id = request.POST.get('order_item_id')
         new_status = request.POST.get('order_status')
-        print(new_status,'88888888888')
         try:
             order_item = OrderItems.objects.get(id=order_item_id)
             order_item.order_status = new_status
