@@ -578,9 +578,7 @@ def cancelorderitem(request):
 def returnorderitem(request):
     if request.method == 'POST':
         id = request.POST.get('itemid')
-        print(id,'000000000000000000000000000000000000000')
         order_id = request.POST.get('order_id')
-        print(order_id,'9999999999999999999999999')
         return_reasons = {
             'defective': 'Defective or damaged product',
             'poor_quality': 'Poor quality or not as described',
@@ -604,7 +602,6 @@ def returnorderitem(request):
             if not has_active_items:
                 order.order_status = 'Returned'
                 order.save()
-            print('saved88888888888888888888888888')
             return redirect('order_details')
         else:
             return HttpResponse("Item not found.")
@@ -1017,7 +1014,6 @@ def orders(request):
 def change_order_status(request):
     if request.method == 'POST':
         order_item_id = request.POST.get('order_item_id')
-        print(order_item_id,'11111111111111111111111111111111111111111111')
         new_status = request.POST.get('order_status')
         print(new_status,'88888888888')
         try:
