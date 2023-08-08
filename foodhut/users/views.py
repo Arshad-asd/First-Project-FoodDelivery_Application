@@ -560,7 +560,6 @@ def order_details(request):#user side
 def cancelorderitem(request):
     if request.method == 'POST':
         item_id = int(request.POST.get('itemId'))
-        print(type(item_id),'0000000000000000000')
         order_item = OrderItems.objects.get(id=item_id)
         if order_item:
             order_item.order_status = 'Canceled'
