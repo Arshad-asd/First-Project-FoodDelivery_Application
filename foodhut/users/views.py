@@ -23,8 +23,6 @@ from psycopg2 import IntegrityError
 from twilio.rest import Client
 from users.models import UserCoupon,ContactMessage,Wallet
 from django.core.paginator import Paginator
-
-
 from users.models import CustomUser,Category,Product,ProductSize,Cart, CartItem,ProfileAddress,ProfilePic,Order,OrderItems,Coupon
 from.forms import Aforms
 from django.db.models import Q
