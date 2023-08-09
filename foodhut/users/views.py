@@ -7,7 +7,6 @@ from django.contrib.auth.views import PasswordChangeView
 from django.contrib.auth.hashers import make_password
 import os
 from django.db.models import Sum
-# Create your views here.
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
 from .models import Product, Cart
