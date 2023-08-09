@@ -114,6 +114,8 @@ def signout(request):
 
 def home(request):
     return render(request,"user/home.html")
+
+
 @login_required(login_url='signin')
 def profile(request):
     user = request.user
