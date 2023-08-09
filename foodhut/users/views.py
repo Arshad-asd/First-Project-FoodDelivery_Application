@@ -27,7 +27,6 @@ from django.core.paginator import Paginator
 
 
 from users.models import CustomUser,Category,Product,ProductSize,Cart, CartItem,ProfileAddress,ProfilePic,Order,OrderItems,Coupon
-
 from.forms import Aforms
 from django.db.models import Q
 import razorpay
