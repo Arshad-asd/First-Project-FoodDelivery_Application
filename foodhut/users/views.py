@@ -30,9 +30,6 @@ from users.models import CustomUser,Category,Product,ProductSize,Cart, CartItem,
 
 from.forms import Aforms
 from django.db.models import Q
-
-# Create your views here.
-
 import razorpay
 from foodhut.settings import RAZOR_KEY_ID,RAZOR_KEY_SECRET
 
