@@ -847,7 +847,6 @@ def delete_data(request,id):
         return redirect('users')
 
 #search a user
-
 def search(request):
     if request.method == 'POST':
       query = request.POST['query']
@@ -939,7 +938,7 @@ def edit_product(request,id):
                 product_size.save()
 
 
-        return redirect('products')  # Redirect to a success page or product list view
+        return redirect('products')
     # If the request method is not POST, render the edit product form with the current product details
     return render(request,"admin/edit_product.html",context)
 
