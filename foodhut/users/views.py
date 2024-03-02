@@ -7,8 +7,9 @@ from django.contrib.auth.views import PasswordChangeView
 from django.contrib.auth.hashers import make_password
 import os
 from django.db.models import Sum
-# Create your views here.
-
+from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib import messages
+from .models import Product, Cart
 from django.shortcuts import render,redirect
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect,JsonResponse
 from django.contrib import messages
@@ -22,15 +23,9 @@ from psycopg2 import IntegrityError
 from twilio.rest import Client
 from users.models import UserCoupon,ContactMessage,Wallet
 from django.core.paginator import Paginator
-
-
 from users.models import CustomUser,Category,Product,ProductSize,Cart, CartItem,ProfileAddress,ProfilePic,Order,OrderItems,Coupon
-
 from.forms import Aforms
 from django.db.models import Q
-
-# Create your views here.
-
 import razorpay
 from foodhut.settings import RAZOR_KEY_ID,RAZOR_KEY_SECRET
 
@@ -117,6 +112,8 @@ def signout(request):
 
 def home(request):
     return render(request,"user/home.html")
+
+
 @login_required(login_url='signin')
 def profile(request):
     user = request.user
@@ -261,7 +258,6 @@ def category_products(request,id):
     all_categories = Category.objects.all()
     category = Category.objects.get(pk=id)
     products = Product.objects.filter(category=category,is_deleted=False)
-    print(products,111111111111111111111111111)
     product_sizes = ProductSize.objects.all()  
     paginator = Paginator(products, per_page=4)
     page_number = request.GET.get('page')
@@ -290,9 +286,7 @@ def add_to_cart_nil(request):
     print('sldkfjldskjfldfkjldsfj')
     return redirect('cart')
 
-from django.shortcuts import get_object_or_404, redirect, render
-from django.contrib import messages
-from .models import Product, Cart
+
 
 def add_to_cart(request, id):
     product = get_object_or_404(Product, pk=id)
@@ -322,22 +316,6 @@ def add_to_cart(request, id):
     return redirect('cart')
 
 
-
-@require_POST
-# def update_cart_item(request, id):
-#     cart_item = get_object_or_404(CartItem, id=id)
-#     new_quantity = int(request.POST.get('quantity', 0))
-
-#     # Retrieve the available stock for the product size
-#     available_stock = cart_item.product_size.Quantity
-
-#     if new_quantity >= 0 and new_quantity <= available_stock:
-#         cart_item.quantity = new_quantity
-#         cart_item.save()
-#     else:
-#         error_message = f"Invalid quantity. Please enter a value between 0 and {available_stock}."
-#         messages.error(request, error_message)
-#     return redirect('cart')
 
 def update_cart_item(request, id):
     user=request.user
@@ -583,7 +561,6 @@ def order_details(request):#user side
 def cancelorderitem(request):
     if request.method == 'POST':
         item_id = int(request.POST.get('itemId'))
-        print(type(item_id),'0000000000000000000')
         order_item = OrderItems.objects.get(id=item_id)
         if order_item:
             order_item.order_status = 'Canceled'
@@ -601,9 +578,7 @@ def cancelorderitem(request):
 def returnorderitem(request):
     if request.method == 'POST':
         id = request.POST.get('itemid')
-        print(id,'000000000000000000000000000000000000000')
         order_id = request.POST.get('order_id')
-        print(order_id,'9999999999999999999999999')
         return_reasons = {
             'defective': 'Defective or damaged product',
             'poor_quality': 'Poor quality or not as described',
@@ -627,7 +602,6 @@ def returnorderitem(request):
             if not has_active_items:
                 order.order_status = 'Returned'
                 order.save()
-            print('saved88888888888888888888888888')
             return redirect('order_details')
         else:
             return HttpResponse("Item not found.")
@@ -881,7 +855,6 @@ def delete_data(request,id):
         return redirect('users')
 
 #search a user
-
 def search(request):
     if request.method == 'POST':
       query = request.POST['query']
@@ -973,7 +946,7 @@ def edit_product(request,id):
                 product_size.save()
 
 
-        return redirect('products')  # Redirect to a success page or product list view
+        return redirect('products')
     # If the request method is not POST, render the edit product form with the current product details
     return render(request,"admin/edit_product.html",context)
 
@@ -1044,9 +1017,7 @@ def orders(request):
 def change_order_status(request):
     if request.method == 'POST':
         order_item_id = request.POST.get('order_item_id')
-        print(order_item_id,'11111111111111111111111111111111111111111111')
         new_status = request.POST.get('order_status')
-        print(new_status,'88888888888')
         try:
             order_item = OrderItems.objects.get(id=order_item_id)
             order_item.order_status = new_status
