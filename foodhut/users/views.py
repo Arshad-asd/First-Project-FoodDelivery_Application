@@ -38,9 +38,7 @@ from foodhut.settings import RAZOR_KEY_ID,RAZOR_KEY_SECRET
 
 
 def razorpay_payment(request):
-    print(5555555555555555555555)
     user=request.user
-    print(user.mobile,222222222222222222222222222222)
     if user is None:
          return render(request,'user/signup.html')
     
@@ -57,7 +55,6 @@ def razorpay_payment(request):
     }
     }
     order = client.order.create(data=DATA)
-    print(8888888888888888888888888888888)
     res = {
         'success': True,
         'key_id': RAZOR_KEY_ID,
@@ -420,6 +417,7 @@ def add_coupons(request):
             start_date=start_date,
             end_date=end_date,
             active=active,
+            min_amount = 500,
             applicable_type=applicable_type,
             category=category,
         )
@@ -484,8 +482,10 @@ def checkout(request):
     # Retrieve the user's address
     cart_items = CartItem.objects.filter(cart__user=user)
     address = ProfileAddress.objects.filter(user=user)
-    balance = Wallet.objects.get(user=user)
-
+    try:
+        balance = Wallet.objects.get(user=user)
+    except Wallet.DoesNotExist:
+        balance = None
     context = {
         'addresses': address,
         'cart': cart,
@@ -516,7 +516,10 @@ def order(request):
     delivery_charge = cart.get_shipping_charge() 
     payment_amount = cart.get_total()
     order_status = "Pending"
-    balance=Wallet.objects.get(user=user)
+    try:
+        balance = Wallet.objects.get(user=user)
+    except Wallet.DoesNotExist:
+        balance = None
     if payment_method =="razorpay":
         order.order_status = 'Paid'
         order.payment_status = 'Completed'
@@ -688,17 +691,21 @@ def send_otp(request):
             user.save()
             request.session['mobile']=mobile  # Replace with your OTP generation logic
 
-    # Add your Twilio account credentials
+            # Add your Twilio account credentials
             account_sid = 'AC2079bbb5b6cf31975f6788847cdca4b2'
             auth_token = '7cdd1b3e5f3014c588d93373a7e9e88a'
-    # twilio_number = '+18306943453'
+            # twilio_number = '+18306943453'
 
-            client = Client(account_sid, auth_token)
-            message = client.messages.create(
-              body=' welcome to FOODHUT  Your OTP is: ' + otp,
-              from_='+13614707012',
-              to=mobile
-            )
+            try:
+                client = Client(account_sid, auth_token)
+                message = client.messages.create(
+                from_='+13614707012',
+                body=' welcome to FOODHUT  Your OTP is: ' + otp,
+                to='+919846056207'
+                )
+            except Exception as e:
+                print(e)
+
             return render(request,'user\enter_otp.html')
     else:
         messages.warning(request,"No user registered with the provided mobile number")
