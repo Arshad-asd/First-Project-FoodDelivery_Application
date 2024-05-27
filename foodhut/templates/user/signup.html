@@ -57,5 +57,16 @@
 		</ul>
 	</div>
 	<!-- //main -->
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.all.min.js"></script>
+    {% for message in messages %}
+    <script>
+        Swal.fire({
+            icon: "{{ message.tags }}",
+            title: "{{ message }}",
+            showConfirmButton: false,
+            timer: 3000 // Adjust the duration as needed
+        });
+    </script>
+{% endfor %}
 </body>
 </html>

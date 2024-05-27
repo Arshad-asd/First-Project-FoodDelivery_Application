@@ -72,14 +72,17 @@ def signup(request):
         Phonenumber = request.POST['Phonenumber']
         pass1 = request.POST['pass1']
         pass2 = request.POST['pass2']
-        if CustomUser.objects.filter(name=name):
+        if CustomUser.objects.filter(eamil=email):
             messages.error(request,"Email already Registered!!")
+            return redirect('signup')
+        if CustomUser.objects.filter(mobile=Phonenumber):
+            message.error(request,'Phone_number alredy taken')
             return redirect('signup')
 
         if pass1 == pass2:
             myuser = CustomUser.objects.create_user(name=name,email=email,mobile =Phonenumber,password=pass1)
             myuser.save()
-            return redirect("signin")
+            return redirect('signin')
         else:
             messages.error(request,"your password and confirm password incorrect")
             return redirect("signup")
@@ -659,7 +662,7 @@ def send_otp(request):
     mobile = request.POST.get('mobilenumber')
     user_number=CustomUser.objects.filter(mobile=mobile)
     otp = ''.join([str(random.randint(0, 9)) for _ in range(6)]) 
-    if user_number.exists():
+    if user_number.exists():            
             user=user_number.first()
             user.otp=otp
             user.save()
@@ -981,7 +984,7 @@ def category(request):
         else:
             category = Category.objects.create(categoryes=category_name)
             stu=Category.objects.all()
-            return render(request,'admin\category.html',{'stu':stu})  # Redirect to category list page
+            return render(request,'admin/category.html',{'stu':stu})  # Redirect to category list page
 
     return render(request,"admin/category.html")
 
